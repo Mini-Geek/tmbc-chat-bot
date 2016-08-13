@@ -6,16 +6,21 @@ import { BrowseModule } from "./chat-modules/browse";
 import { IChatModule } from "./chat-modules/chat-module";
 import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { CountModule } from "./chat-modules/count";
+import { DebugModule } from "./chat-modules/debug";
 import { EmojiChangeModule } from "./chat-modules/emoji-change";
+import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 import { NameChangeModule } from "./chat-modules/name-change";
 import { SleepModule } from "./chat-modules/sleep";
 
+let debugModule = new DebugModule();
 let chatModules: IChatModule[] = [
     new HelpModule(),
+    new HelloModule(),
     new LinksModule(),
     new CountModule(),
+    debugModule,
     new SleepModule(),
     new BrowseModule(),
     new ChaterinaInteractionModule(),
@@ -43,6 +48,7 @@ login(credentials, function callback(loginErr, api) {
         if (!message.threadID) {
             return winston.error("no threadID");
         }
+        winston.log(debugModule.msgLevel, "Full message details", message);
         chatModules.forEach(m => {
             if (m.getMessageType() === message.type) {
                 m.processMessage(api, message, stopListening, chatModules);

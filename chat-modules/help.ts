@@ -4,7 +4,7 @@ import { IChatModule } from "./chat-module";
 export class HelpModule implements IChatModule {
     public getMessageType(): "message" { return "message"; }
     public getHelpLine(): string {
-        return "Hello, Robby or /help: show this message";
+        return "/help: show this message";
     }
 
     public processMessage(
@@ -12,10 +12,7 @@ export class HelpModule implements IChatModule {
         message: fbapi.MessageEvent,
         stopListening: () => void,
         chatModules: IChatModule[]): void {
-        if (message.body &&
-            (message.body === "/help" ||
-             message.body.toUpperCase() === "Hello, Robby".toUpperCase() ||
-             message.body.toUpperCase() === "Hello Robby".toUpperCase())) {
+        if (message.body && message.body === "/help") {
             api.sendMessage(chatModules.map(m => m.getHelpLine()).join("\n"), message.threadID);
         }
     }
