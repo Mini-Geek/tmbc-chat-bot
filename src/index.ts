@@ -66,7 +66,7 @@ login(credentials, (loginErr, api) => {
         winston.warn(reason);
         stopListening();
         api.logout(() => process.exit(0));
-    }
+    };
     process.on("SIGINT", () => {
         shutdown("SIGINT detected, logging out");
     });

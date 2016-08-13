@@ -1,5 +1,4 @@
 import fbapi = require("facebook-chat-api");
-import winston = require("winston");
 import { IChatModule } from "./chat-module";
 
 export class SleepModule implements IChatModule {
