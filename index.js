@@ -96,9 +96,9 @@ login(creds, function callback(err, api) {
 			}
 			if (message.body === "/sleep" || message.body === "/die" || message.body === "/kill") {
 				stopListening();
-				api.logout();
-				// process.exit();
-				// return;
+				api.logout(function(err) {
+					process.exit();
+				});
 			}
 		}
     });
