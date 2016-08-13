@@ -1,6 +1,5 @@
 import login = require("facebook-chat-api");
 import creds = require("./credentials");
-// import chm = require("./chat-modules/chat-module");
 import { ChatModule } from "./chat-modules/chat-module";
 import { NameChangeModule } from "./chat-modules/name-change";
 import { EmojiChangeModule } from "./chat-modules/emoji-change";
@@ -9,7 +8,7 @@ import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { SleepModule } from "./chat-modules/sleep";
 import { HelpModule } from "./chat-modules/help";
 import { BrowseModule } from "./chat-modules/browse";
-// import m1 = require("./chat-modules/name-change");
+
 let chatModules: ChatModule[] = [
     new HelpModule(),
     new CountModule(),
