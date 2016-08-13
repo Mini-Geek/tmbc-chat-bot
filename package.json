@@ -1,5 +1,5 @@
 {
-  "name": "facebook-chat",
+  "name": "tmbc-chat-bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,9 +13,11 @@
     "typings": "^1.3.2"
   },
   "scripts": {
+    "prestart": "tsc",
+    "start": "node --nolazy build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p .",
-    "lint": "tslint **/*.ts -e node_modules/** -e typings/** --force"
+    "lint": "tslint **/*.ts -e node_modules/** -e typings/** --force",
+    "postinstall": "typings install"
   },
   "author": "",
   "license": "ISC"
