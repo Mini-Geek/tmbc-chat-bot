@@ -10,7 +10,7 @@ export class CountModule implements IChatModule {
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
         if (message.body === "/count") {
-            api.getThreadInfo(message.threadID, function (err, info) {
+            api.getThreadInfo(message.threadID, (err, info) => {
                 if (err) {
                     winston.error("Error occurred getting thread info", err);
                 } else {

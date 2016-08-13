@@ -18,11 +18,11 @@ export class BrowseModule implements IChatModule {
                 time = undefined;
             }
             winston.info("Time given is", time);
-            api.getThreadInfo(message.threadID, function (infoErr, info) {
+            api.getThreadInfo(message.threadID, (infoErr, info) => {
                 if (infoErr) {
                     console.error(infoErr);
                 } else {
-                    api.getThreadHistory(message.threadID, 0, 10, time, function (historyErr, history) {
+                    api.getThreadHistory(message.threadID, 0, 10, time, (historyErr, history) => {
                         if (historyErr) {
                             console.error(historyErr);
                         } else {

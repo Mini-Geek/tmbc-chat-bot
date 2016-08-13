@@ -12,7 +12,7 @@ export class SleepModule implements IChatModule {
         if (message.body === "/sleep" || message.body === "/die" || message.body === "/kill") {
             winston.warn("Shutting down!");
             stopListening();
-            api.logout(function () {
+            api.logout(() => {
                 process.exit();
             });
         }

@@ -39,13 +39,13 @@ if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     process.exit();
 }
 
-login(credentials, function callback(loginErr, api) {
+login(credentials, (loginErr, api) => {
     if (loginErr) {
         return winston.error("Error logging in", loginErr);
     }
     api.setOptions({ listenEvents: true });
 
-    let stopListening = api.listen(function callback(listenErr, message) {
+    let stopListening = api.listen((listenErr, message) => {
         if (listenErr) {
             return winston.error("Error listening", listenErr);
         }
