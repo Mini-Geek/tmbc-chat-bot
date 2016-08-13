@@ -8,13 +8,9 @@ export class SleepModule implements IChatModule {
         return "/sleep or /die or /kill: kills Robby. Use if he goes haywire.";
     }
 
-    public processMessage(api: fbapi.Api, message: fbapi.MessageEvent, stopListening: () => void): void {
+    public processMessage(api: fbapi.Api, message: fbapi.MessageEvent, shutdown: (reason: string) => void): void {
         if (message.body === "/sleep" || message.body === "/die" || message.body === "/kill") {
-            winston.warn("Shutting down!");
-            stopListening();
-            api.logout(() => {
-                process.exit();
-            });
+            shutdown(message.body + " command sent, shutting down");
         }
     }
 }

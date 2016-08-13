@@ -9,6 +9,6 @@ export interface IChatModule {
     processMessage(
         api: fbapi.Api,
         message: fbapi.MessageEvent | fbapi.EventEvent | fbapi.TypEvent,
-        stopListening: () => void,
+        shutdown: (reason: string) => void,
         chatModules: IChatModule[]): void;
 }

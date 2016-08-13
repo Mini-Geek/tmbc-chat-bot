@@ -10,7 +10,7 @@ export class HelpModule implements IChatModule {
     public processMessage(
         api: fbapi.Api,
         message: fbapi.MessageEvent,
-        stopListening: () => void,
+        shutdown: (reason: string) => void,
         chatModules: IChatModule[]): void {
         if (message.body && message.body === "/help") {
             api.sendMessage(chatModules.map(m => m.getHelpLine()).join("\n"), message.threadID);

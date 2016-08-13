@@ -57,14 +57,17 @@ login(credentials, (loginErr, api) => {
         }
         chatModules.forEach(m => {
             if (m.getMessageType() === "all" || m.getMessageType() === message.type) {
-                m.processMessage(api, message, stopListening, chatModules);
+                m.processMessage(api, message, shutdown, chatModules);
             }
         });
     });
 
-    let cleanup = () => {
-        winston.info("logging out");
-        api.logout();
-    };
-    process.on("SIGINT", cleanup);
+    let shutdown = (reason: string) => {
+        winston.warn(reason);
+        stopListening();
+        api.logout(() => process.exit(0));
+    }
+    process.on("SIGINT", () => {
+        shutdown("SIGINT detected, logging out");
+    });
 });
