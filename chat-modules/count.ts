@@ -1,7 +1,8 @@
 import fbapi = require("facebook-chat-api");
-import { ChatModule } from "./chat-module";
+import winston = require("winston");
+import { IChatModule } from "./chat-module";
 
-export class CountModule implements ChatModule {
+export class CountModule implements IChatModule {
     public getMessageType(): "message" { return "message"; }
     public getHelpLine(): string {
         return "/count: show message count";
@@ -11,9 +12,9 @@ export class CountModule implements ChatModule {
         if (message.body === "/count") {
             api.getThreadInfo(message.threadID, function (err, info) {
                 if (err) {
-                    console.error(err);
+                    winston.error("Error occurred getting thread info", err);
                 } else {
-                    console.log(info);
+                    winston.info("Thread info", info);
                     api.sendMessage("Message count: " + (169700 + info.messageCount), message.threadID);
                 }
             });

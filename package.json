@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "facebook-chat-api": "^1.1.0"
+    "facebook-chat-api": "^1.1.0",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "tslint": "^3.14.0",
@@ -13,7 +14,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "lint": "tslint **/*.ts -e node_modules/** -e typings/** --force"
   },
   "author": "",
   "license": "ISC"

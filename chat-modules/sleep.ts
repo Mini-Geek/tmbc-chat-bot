@@ -1,7 +1,7 @@
 import fbapi = require("facebook-chat-api");
-import { ChatModule } from "./chat-module";
+import { IChatModule } from "./chat-module";
 
-export class SleepModule implements ChatModule {
+export class SleepModule implements IChatModule {
     public getMessageType(): "message" { return "message"; }
     public getHelpLine(): string {
         return "/sleep or /die or /kill: kills Robby. Use if he goes haywire.";

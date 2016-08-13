@@ -1,14 +1,15 @@
 import fbapi = require("facebook-chat-api");
-import { ChatModule } from "./chat-module";
+import winston = require("winston");
+import { IChatModule } from "./chat-module";
 
-export class BrowseModule implements ChatModule {
+export class BrowseModule implements IChatModule {
     public getMessageType(): "message" { return "message"; }
     public getHelpLine(): string {
         return "/first [timestamp in millis Unix time]: (broken)";
     }
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
-        if (message.body.lastIndexOf("/first", 0) === 0) {
+        if (message.body && message.body.lastIndexOf("/first", 0) === 0) {
             let parts = message.body.split(" ");
             let time: Date;
             if (parts.length > 1) {
@@ -16,16 +17,16 @@ export class BrowseModule implements ChatModule {
             } else {
                 time = undefined;
             }
-            console.log(time);
-            api.getThreadInfo(message.threadID, function (err, info) {
-                if (err) {
-                    console.error(err);
+            winston.info("Time given is", time);
+            api.getThreadInfo(message.threadID, function (infoErr, info) {
+                if (infoErr) {
+                    console.error(infoErr);
                 } else {
-                    api.getThreadHistory(message.threadID, 0, 10, time, function (err, history) {
-                        if (err) {
-                            console.error(err);
+                    api.getThreadHistory(message.threadID, 0, 10, time, function (historyErr, history) {
+                        if (historyErr) {
+                            console.error(historyErr);
                         } else {
-                            console.log(history);
+                            winston.info("thread history", history);
                         }
                     });
                 }

@@ -1,8 +1,9 @@
 import login = require("facebook-chat-api");
+import winston = require("winston");
 import { credentials } from "./credentials";
-import { ChatModule } from "./chat-modules/chat-module";
 
 import { BrowseModule } from "./chat-modules/browse";
+import { IChatModule } from "./chat-modules/chat-module";
 import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { CountModule } from "./chat-modules/count";
 import { EmojiChangeModule } from "./chat-modules/emoji-change";
@@ -11,7 +12,7 @@ import { LinksModule } from "./chat-modules/links";
 import { NameChangeModule } from "./chat-modules/name-change";
 import { SleepModule } from "./chat-modules/sleep";
 
-let chatModules: ChatModule[] = [
+let chatModules: IChatModule[] = [
     new HelpModule(),
     new LinksModule(),
     new CountModule(),
@@ -22,24 +23,29 @@ let chatModules: ChatModule[] = [
     new EmojiChangeModule(),
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
-    console.error("Please fill in credentials.ts with the account's email and password.");
+    winston.error("Please fill in credentials.ts with the account's email and password.");
     process.exit();
 }
 
-login(credentials, function callback(err, api) {
-    if (err) {
-        return console.error(err);
+login(credentials, function callback(loginErr, api) {
+    if (loginErr) {
+        return winston.error("Error logging in", loginErr);
     }
     api.setOptions({ listenEvents: true });
 
-    var stopListening = api.listen(function callback(err, message) {
-        // console.log("full message", message);
+    let stopListening = api.listen(function callback(listenErr, message) {
+        if (listenErr) {
+            return winston.error("Error listening", listenErr);
+        }
         if (!message) {
-            return console.error("message falsy");
+            return winston.error("message falsy");
         }
         if (!message.threadID) {
-            return console.error("no threadID");
+            return winston.error("no threadID");
         }
+        // if (message.type === "message" && !(<any> message).body) {
+        //     winston.error("body blank in message, full message", message);
+        // }
         chatModules.forEach(m => {
             if (m.getMessageType() === message.type) {
                 m.processMessage(api, message, stopListening, chatModules);
