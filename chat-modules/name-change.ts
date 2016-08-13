@@ -4,7 +4,7 @@ import { IChatModule } from "./chat-module";
 
 export class NameChangeModule implements IChatModule {
     private preferredTitle: string = "They Might Be Crystians";
-    public getMessageType(): "event" { return "event"; }
+    public getMessageType(): string { return "event"; }
     public getHelpLine(): string {
         return `Will keep the chat title at ${this.preferredTitle}`;
     }

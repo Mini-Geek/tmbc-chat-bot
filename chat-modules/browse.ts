@@ -3,7 +3,7 @@ import winston = require("winston");
 import { IChatModule } from "./chat-module";
 
 export class BrowseModule implements IChatModule {
-    public getMessageType(): "message" { return "message"; }
+    public getMessageType(): string { return "message"; }
     public getHelpLine(): string {
         return "/first [timestamp in millis Unix time]: (broken)";
     }

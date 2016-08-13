@@ -3,7 +3,7 @@ import { IChatModule } from "./chat-module";
 
 export class ChaterinaInteractionModule implements IChatModule {
     private chaterinaId: fbapi.OutputID = "100011323755443";
-    public getMessageType(): "message" { return "message"; }
+    public getMessageType(): string { return "message"; }
     public getHelpLine(): string {
         return "/benice: Something ;)";
     }

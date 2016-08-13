@@ -4,7 +4,7 @@ import { IChatModule } from "./chat-module";
 
 export class EmojiChangeModule implements IChatModule {
     private preferredEmoji: string = "🍻";
-    public getMessageType(): "event" { return "event"; }
+    public getMessageType(): string { return "event"; }
     public getHelpLine(): string {
         return `Will keep the emoji at ${this.preferredEmoji}`;
     }

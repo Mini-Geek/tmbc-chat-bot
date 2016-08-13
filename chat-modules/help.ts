@@ -2,7 +2,7 @@ import fbapi = require("facebook-chat-api");
 import { IChatModule } from "./chat-module";
 
 export class HelpModule implements IChatModule {
-    public getMessageType(): "message" { return "message"; }
+    public getMessageType(): string { return "message"; }
     public getHelpLine(): string {
         return "/help: show this message";
     }

@@ -1,7 +1,10 @@
 import fbapi = require("facebook-chat-api");
 
 export interface IChatModule {
-    getMessageType(): ("message" | "event");
+    /**
+     * "message" | "event" | "typ" | "all"
+     */
+    getMessageType(): string;
     getHelpLine(): string;
     processMessage(
         api: fbapi.Api,
