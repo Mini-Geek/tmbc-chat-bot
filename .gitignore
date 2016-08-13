@@ -1,6 +1,8 @@
 # Login credentials
 credentials.ts
-credentials.js
+
+# Built files
+build
 
 # Logs
 logs
@@ -25,7 +27,6 @@ coverage
 .lock-wscript
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
-build
 build/Release
 
 # Dependency directory
