@@ -43,9 +43,6 @@ login(credentials, function callback(loginErr, api) {
         if (!message.threadID) {
             return winston.error("no threadID");
         }
-        // if (message.type === "message" && !(<any> message).body) {
-        //     winston.error("body blank in message, full message", message);
-        // }
         chatModules.forEach(m => {
             if (m.getMessageType() === message.type) {
                 m.processMessage(api, message, stopListening, chatModules);
