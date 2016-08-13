@@ -1,16 +1,19 @@
 import login = require("facebook-chat-api");
-import creds = require("./credentials");
+import { credentials } from "./credentials";
 import { ChatModule } from "./chat-modules/chat-module";
-import { NameChangeModule } from "./chat-modules/name-change";
-import { EmojiChangeModule } from "./chat-modules/emoji-change";
-import { CountModule } from "./chat-modules/count";
-import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
-import { SleepModule } from "./chat-modules/sleep";
-import { HelpModule } from "./chat-modules/help";
+
 import { BrowseModule } from "./chat-modules/browse";
+import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
+import { CountModule } from "./chat-modules/count";
+import { EmojiChangeModule } from "./chat-modules/emoji-change";
+import { HelpModule } from "./chat-modules/help";
+import { LinksModule } from "./chat-modules/links";
+import { NameChangeModule } from "./chat-modules/name-change";
+import { SleepModule } from "./chat-modules/sleep";
 
 let chatModules: ChatModule[] = [
     new HelpModule(),
+    new LinksModule(),
     new CountModule(),
     new SleepModule(),
     new BrowseModule(),
@@ -18,12 +21,12 @@ let chatModules: ChatModule[] = [
     new NameChangeModule(),
     new EmojiChangeModule(),
 ];
-if (!creds || !creds.credentials || !creds.credentials.email || creds.credentials.email === "<FILL IN>") {
+if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     console.error("Please fill in credentials.ts with the account's email and password.");
     process.exit();
 }
 
-login(creds.credentials, function callback(err, api) {
+login(credentials, function callback(err, api) {
     if (err) {
         return console.error(err);
     }
