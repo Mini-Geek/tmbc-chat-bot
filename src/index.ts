@@ -14,6 +14,14 @@ import { LinksModule } from "./chat-modules/links";
 import { NameChangeModule } from "./chat-modules/name-change";
 import { SleepModule } from "./chat-modules/sleep";
 
+winston.add(
+    winston.transports.File,
+    {
+        filename: "logs/chat-bot.log",
+        level: "warn",
+    });
+winston.warn("starting up!");
+
 let chatModules: IChatModule[] = [
     new HelpModule(),
     new HelloModule(),
@@ -53,4 +61,10 @@ login(credentials, function callback(loginErr, api) {
             }
         });
     });
+
+    let cleanup = () => {
+        winston.info("logging out");
+        api.logout();
+    };
+    process.on("SIGINT", cleanup);
 });
