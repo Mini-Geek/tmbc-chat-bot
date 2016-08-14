@@ -1,4 +1,5 @@
 import fbapi = require("facebook-chat-api");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class LinksModule implements IChatModule {
@@ -9,8 +10,9 @@ export class LinksModule implements IChatModule {
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
         if (message.body === "/links") {
-            api.sendMessage("https://bit.ly/TMBCChatGuide\nhttps://github.com/Mini-Geek/tmbc-chat-bot",
-                message.threadID);
+            Utils.sendMessage(api, message,
+                "https://bit.ly/TMBCChatGuide" + "\n" +
+                "https://github.com/Mini-Geek/tmbc-chat-bot");
         }
     }
 }

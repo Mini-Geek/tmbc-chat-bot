@@ -1,5 +1,6 @@
 import fbapi = require("facebook-chat-api");
 import winston = require("winston");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class CountModule implements IChatModule {
@@ -15,7 +16,7 @@ export class CountModule implements IChatModule {
                     winston.error("Error occurred getting thread info", err);
                 } else {
                     winston.info("Thread info", info);
-                    api.sendMessage("Message count: " + (169700 + info.messageCount), message.threadID);
+                    Utils.sendMessage(api, message, "Message count: " + (169700 + info.messageCount));
                 }
             });
         }

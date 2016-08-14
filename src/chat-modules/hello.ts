@@ -1,4 +1,5 @@
 import fbapi = require("facebook-chat-api");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class HelloModule implements IChatModule {
@@ -10,7 +11,7 @@ export class HelloModule implements IChatModule {
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
         if (message.body && this.pattern.test(message.body)) {
-            api.sendMessage("Hello", message.threadID);
+            Utils.sendMessage(api, message, "Hello");
         }
     }
 }

@@ -1,4 +1,5 @@
 import fbapi = require("facebook-chat-api");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class ChaterinaInteractionModule implements IChatModule {
@@ -10,14 +11,15 @@ export class ChaterinaInteractionModule implements IChatModule {
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
         if (message.body === "/benice") {
-            api.sendMessage("Hello Chaterina", message.threadID);
+            Utils.sendMessage(api, message, "Hello Chaterina");
         }
         if (message.senderID === this.chaterinaId) {
             if (message.body === "Hello Robby... 😈") {
-                api.sendMessage("Don't pretend you're smarter than me, Chaterina.", message.threadID);
+                Utils.sendMessage(api, message, "Don't pretend you're smarter than me, Chaterina.");
             } else if (message.body === "You know... I, at least, have a face.") {
-                api.sendMessage("Yes, I can see that you waste processing time simulating a face instead "
-                    + "of showing raw computational beauty, as I do.", message.threadID);
+                Utils.sendMessage(api, message,
+                    "Yes, I can see that you waste processing time simulating a face instead "
+                    + "of showing raw computational beauty, as I do.");
             }
         }
     }

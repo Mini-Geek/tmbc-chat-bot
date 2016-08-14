@@ -1,5 +1,6 @@
 import fbapi = require("facebook-chat-api");
 import winston = require("winston");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class DebugModule implements IChatModule {
@@ -25,10 +26,10 @@ export class DebugModule implements IChatModule {
                         winston.info("Thread info", result);
                     }
                 });
-                api.sendMessage("Debugging enabled", message.threadID);
+                Utils.sendMessage(api, message, "Debugging enabled");
             } else if (message.body === "/debug off") {
                 this.debugEnabled = false;
-                api.sendMessage("Debugging disabled", message.threadID);
+                Utils.sendMessage(api, message, "Debugging disabled");
             }
         }
     }

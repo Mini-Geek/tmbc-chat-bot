@@ -1,4 +1,5 @@
 import fbapi = require("facebook-chat-api");
+import { Utils } from "../utils";
 import { IChatModule } from "./chat-module";
 
 export class HelpModule implements IChatModule {
@@ -13,7 +14,7 @@ export class HelpModule implements IChatModule {
         shutdown: (reason: string) => void,
         chatModules: IChatModule[]): void {
         if (message.body && message.body === "/help") {
-            api.sendMessage(chatModules.map(m => m.getHelpLine()).join("\n"), message.threadID);
+            Utils.sendMessage(api, message, chatModules.map(m => m.getHelpLine()).join("\n"));
         }
     }
 }
