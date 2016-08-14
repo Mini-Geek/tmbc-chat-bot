@@ -1,4 +1,5 @@
 import fbapi = require("facebook-chat-api");
+import winston = require("winston");
 import { IChatModule } from "./chat-module";
 
 export class SleepModule implements IChatModule {
@@ -9,6 +10,7 @@ export class SleepModule implements IChatModule {
 
     public processMessage(api: fbapi.Api, message: fbapi.MessageEvent, shutdown: (reason: string) => void): void {
         if (message.body === "/sleep" || message.body === "/die" || message.body === "/kill") {
+            winston.warn("Shutting down due to command", message);
             shutdown(message.body + " command sent, shutting down");
         }
     }
