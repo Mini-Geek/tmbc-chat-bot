@@ -12,6 +12,7 @@ import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 import { NameChangeModule } from "./chat-modules/name-change";
+import { SecretModule } from "./chat-modules/secret";
 import { SleepModule } from "./chat-modules/sleep";
 
 winston.add(
@@ -31,6 +32,7 @@ let chatModules: IChatModule[] = [
     new SleepModule(),
     new BrowseModule(),
     new ChaterinaInteractionModule(),
+    new SecretModule(),
     new NameChangeModule(),
     new EmojiChangeModule(),
 ];

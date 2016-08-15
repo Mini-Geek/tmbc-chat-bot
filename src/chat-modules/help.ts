@@ -14,7 +14,7 @@ export class HelpModule implements IChatModule {
         shutdown: (reason: string) => void,
         chatModules: IChatModule[]): void {
         if (message.body && message.body === "/help") {
-            Utils.sendMessage(api, message, chatModules.map(m => m.getHelpLine()).join("\n"));
+            Utils.sendMessage(api, message, chatModules.map(m => m.getHelpLine()).filter(x => !!x).join("\n"));
         }
     }
 }
