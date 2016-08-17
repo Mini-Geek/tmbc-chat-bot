@@ -5,7 +5,7 @@ export interface IChatModule {
      * "message" | "event" | "typ" | "all"
      */
     getMessageType(): string;
-    getHelpLine(): string;
+    getHelpLine(threadID: string): string;
     processMessage(
         api: fbapi.Api,
         message: fbapi.MessageEvent | fbapi.EventEvent | fbapi.TypEvent,
