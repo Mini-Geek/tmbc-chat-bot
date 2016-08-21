@@ -1,16 +1,15 @@
 import fbapi = require("facebook-chat-api");
 import winston = require("winston");
-import { IChatModule } from "./chat-module";
+import { IContext, MessageModule } from "./chat-module";
 
-export class BrowseModule implements IChatModule {
-    public getMessageType(): string { return "message"; }
+export class BrowseModule extends MessageModule {
     public getHelpLine(): string {
         return "/first [timestamp in millis Unix time]: (broken)";
     }
 
-    public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
-        if (message.body && message.body.lastIndexOf("/first", 0) === 0) {
-            let parts = message.body.split(" ");
+    public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
+        if (ctx.message.body && ctx.message.body.lastIndexOf("/first", 0) === 0) {
+            let parts = ctx.message.body.split(" ");
             let time: Date;
             if (parts.length > 1) {
                 time = new Date(+parts[1]);
@@ -18,11 +17,11 @@ export class BrowseModule implements IChatModule {
                 time = undefined;
             }
             winston.info("Time given is", time);
-            api.getThreadInfo(message.threadID, (infoErr, info) => {
+            ctx.api.getThreadInfo(ctx.message.threadID, (infoErr, info) => {
                 if (infoErr) {
                     console.error(infoErr);
                 } else {
-                    api.getThreadHistory(message.threadID, 0, 10, time, (historyErr, history) => {
+                    ctx.api.getThreadHistory(ctx.message.threadID, 0, 10, time, (historyErr, history) => {
                         if (historyErr) {
                             console.error(historyErr);
                         } else {

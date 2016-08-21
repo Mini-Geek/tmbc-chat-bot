@@ -1,16 +1,15 @@
 import fbapi = require("facebook-chat-api");
 import { Utils } from "../utils";
-import { IChatModule } from "./chat-module";
+import { IContext, MessageModule } from "./chat-module";
 
-export class LinksModule implements IChatModule {
-    public getMessageType(): string { return "message"; }
+export class LinksModule extends MessageModule {
     public getHelpLine(): string {
         return "/links: show chat guide link and my source";
     }
 
-    public processMessage(api: fbapi.Api, message: fbapi.MessageEvent): void {
-        if (message.body === "/links") {
-            Utils.sendMessage(api, message,
+    public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
+        if (ctx.message.body === "/links") {
+            Utils.sendMessage(ctx,
                 "https://bit.ly/TMBCChatGuide" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot");
         }

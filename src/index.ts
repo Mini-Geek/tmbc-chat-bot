@@ -3,10 +3,11 @@ import winston = require("winston");
 import { credentials } from "./credentials";
 
 import { BrowseModule } from "./chat-modules/browse";
-import { IChatModule } from "./chat-modules/chat-module";
+import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
 import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { CountModule } from "./chat-modules/count";
 import { DebugModule } from "./chat-modules/debug";
+import { DieModule } from "./chat-modules/die";
 import { EmojiChangeModule } from "./chat-modules/emoji-change";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
@@ -23,13 +24,16 @@ winston.add(
     });
 winston.warn("starting up!");
 
-let chatModules: IChatModule[] = [
+let sleepModule = new SleepModule();
+let sleeping = false;
+let chatModules: IChatModule<AnyEvent>[] = [
     new HelpModule(),
     new HelloModule(),
     new LinksModule(),
     new CountModule(),
     new DebugModule(),
-    new SleepModule(),
+    sleepModule,
+    new DieModule(),
     new BrowseModule(),
     new ChaterinaInteractionModule(),
     new SecretModule(),
@@ -57,17 +61,37 @@ login(credentials, (loginErr, api) => {
         if (!message.threadID) {
             return winston.error("no threadID");
         }
-        chatModules.forEach(m => {
-            if (m.getMessageType() === "all" || m.getMessageType() === message.type) {
-                m.processMessage(api, message, shutdown, chatModules);
+        let ctx: IContext<any> = {
+                api: api,
+                chatModules: chatModules,
+                message: message,
+                setSleep: setSleep,
+                shutdown: shutdown,
+                sleeping: sleeping,
+            };
+        if (sleeping) {
+            if (messageTypeMatch(sleepModule, message.type)) {
+                sleepModule.processMessage(ctx);
             }
-        });
+        } else {
+            chatModules.forEach(m => {
+                if (messageTypeMatch(m, message.type)) {
+                    m.processMessage(ctx);
+                }
+            });
+        }
     });
 
     let shutdown = (reason: string) => {
         winston.warn(reason);
         stopListening();
         api.logout(() => process.exit(0));
+    };
+    let setSleep = (s: boolean) => {
+        sleeping = s;
+    };
+    let messageTypeMatch = (m: IChatModule<any>, type: string): boolean => {
+        return m.getMessageType() === "all" || m.getMessageType() === type;
     };
     process.on("SIGINT", () => {
         shutdown("SIGINT detected, logging out");

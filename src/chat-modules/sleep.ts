@@ -1,17 +1,19 @@
 import fbapi = require("facebook-chat-api");
-import winston = require("winston");
-import { IChatModule } from "./chat-module";
+import { Utils } from "../utils";
+import { IContext, MessageModule } from "./chat-module";
 
-export class SleepModule implements IChatModule {
-    public getMessageType(): string { return "message"; }
+export class SleepModule extends MessageModule {
     public getHelpLine(): string {
-        return "/sleep or /die or /kill: kills Robby. Use if he goes haywire.";
+        return "/sleep and /wake: suspends Robby temporarily, and resumes him.";
     }
 
-    public processMessage(api: fbapi.Api, message: fbapi.MessageEvent, shutdown: (reason: string) => void): void {
-        if (message.body === "/sleep" || message.body === "/die" || message.body === "/kill") {
-            winston.warn("Shutting down due to command", message);
-            shutdown(message.body + " command sent, shutting down");
+    public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
+        if (ctx.message.body === "/sleep" && !ctx.sleeping) {
+            Utils.sendMessage(ctx, "Going to sleep until I hear /wake");
+            ctx.setSleep(true);
+        } else if (ctx.message.body === "/wake" && ctx.sleeping) {
+            Utils.sendMessage(ctx, "I'm awake!");
+            ctx.setSleep(false);
         }
     }
 }
