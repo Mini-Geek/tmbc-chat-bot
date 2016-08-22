@@ -2,7 +2,6 @@ import login = require("facebook-chat-api");
 import winston = require("winston");
 import { credentials } from "./credentials";
 
-import { BrowseModule } from "./chat-modules/browse";
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
 import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { CountModule } from "./chat-modules/count";
@@ -34,7 +33,6 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new DebugModule(),
     sleepModule,
     new DieModule(),
-    new BrowseModule(),
     new ChaterinaInteractionModule(),
     new SecretModule(),
     new NameChangeModule(),
