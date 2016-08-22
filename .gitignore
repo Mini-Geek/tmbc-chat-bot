@@ -10,6 +10,7 @@ logs
 npm-debug.log*
 
 # Runtime data
+motw-data
 pids
 *.pid
 *.seed

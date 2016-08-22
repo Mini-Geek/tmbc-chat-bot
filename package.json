@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "facebook-chat-api": "^1.2.0",
+    "node-persist": "0.0.12",
     "winston": "^2.2.0"
   },
   "devDependencies": {

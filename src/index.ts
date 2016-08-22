@@ -11,6 +11,7 @@ import { EmojiChangeModule } from "./chat-modules/emoji-change";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
+import { MotwModule } from "./chat-modules/motw";
 import { NameChangeModule } from "./chat-modules/name-change";
 import { SecretModule } from "./chat-modules/secret";
 import { SleepModule } from "./chat-modules/sleep";
@@ -27,6 +28,7 @@ let sleepModule = new SleepModule();
 let sleeping = false;
 let chatModules: IChatModule<AnyEvent>[] = [
     new HelpModule(),
+    new MotwModule(),
     new HelloModule(),
     new LinksModule(),
     new CountModule(),
@@ -88,7 +90,7 @@ login(credentials, (loginErr, api) => {
     let setSleep = (s: boolean) => {
         sleeping = s;
     };
-    let messageTypeMatch = (m: IChatModule<any>, type: string): boolean => {
+    let messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
         return m.getMessageType() === "all" || m.getMessageType() === type;
     };
     process.on("SIGINT", () => {
