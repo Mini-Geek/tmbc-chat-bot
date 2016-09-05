@@ -1,11 +1,12 @@
 import fbapi = require("facebook-chat-api");
 import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
+import { regexNamePattern, userFriendlyName } from "./const";
 
 export class HelloModule extends MessageModule {
-    private pattern: RegExp = /^(Hello|hi|hey),? Robby( A[sz]imov)?[\!\.\?]?$/i;
+    private pattern: RegExp = new RegExp("^(Hello|hi|hey),? " + regexNamePattern + "[\\!\\.\\?]?$", "i");
     public getHelpLine(): string {
-        return "Hello, Robby: say hello";
+        return `Hello, ${userFriendlyName}: say hello`;
     }
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {

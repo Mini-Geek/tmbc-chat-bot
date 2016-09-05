@@ -1,3 +1,6 @@
+/**
+ * Settings for message counts, emojis, and titles for different conversations.
+ */
 export const groups: {
     [key: string]: { preferredEmoji: string, preferredTitle: string, countBeforeMe: number }
 } = {
@@ -12,3 +15,11 @@ export const groups: {
         preferredTitle: "They Might Be Coders",
     },
 };
+/**
+ * The name of this bot that it will use to identify itself.
+ */
+export const userFriendlyName = "The NSA";
+/**
+ * Pattern for listening for people talking to this bot.
+ */
+export const regexNamePattern = "((The )?NSA|Robby( A[sz]imov)?)";

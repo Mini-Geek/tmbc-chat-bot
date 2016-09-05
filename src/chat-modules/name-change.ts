@@ -2,7 +2,7 @@ import fbapi = require("facebook-chat-api");
 import winston = require("winston");
 import { Utils } from "../utils";
 import { EventModule, IContext } from "./chat-module";
-import { groups } from "./groups";
+import { groups } from "./const";
 
 export class NameChangeModule extends EventModule {
     public getHelpLine(threadID: string): string {

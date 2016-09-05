@@ -1,14 +1,17 @@
 import fbapi = require("facebook-chat-api");
 import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
+import { regexNamePattern } from "./const";
 
 /**
  * Easter egg: quotes from Person of Interest, season 3 finale.
  */
 export class SecretModule extends MessageModule {
     private greeted = false;
-    private firstPattern: RegExp = /^Good (morning|afternoon|evening|day),? Robby( A[sz]imov)?[\!\.\?]?$/i;
-    private secondPattern: RegExp = /^(The question is,?\s*)?what(,? my dear Robby,?)? are your commands for us\??$/i;
+    private firstPattern: RegExp = new RegExp("^Good (morning|afternoon|evening|day),? " +
+                                                regexNamePattern + "[\!\.\?]?$", "i");
+    private secondPattern: RegExp = new RegExp("^(The question is,?\s*)?what(,? my dear " +
+                                                regexNamePattern + ",?)? are your commands for us\??$", "i");
     public getHelpLine(): string {
         return undefined;
     }

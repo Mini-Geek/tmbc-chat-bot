@@ -2,7 +2,7 @@ import fbapi = require("facebook-chat-api");
 import winston = require("winston");
 import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
-import { groups } from "./groups";
+import { groups } from "./const";
 
 export class CountModule extends MessageModule {
     public getHelpLine(): string {

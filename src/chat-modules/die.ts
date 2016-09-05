@@ -1,10 +1,11 @@
 import fbapi = require("facebook-chat-api");
 import winston = require("winston");
 import { IContext, MessageModule } from "./chat-module";
+import { userFriendlyName } from "./const";
 
 export class DieModule extends MessageModule {
     public getHelpLine(): string {
-        return "/die or /kill: kills Robby. Use if he goes haywire.";
+        return `/die or /kill: kills ${userFriendlyName}. Use if he goes haywire.`;
     }
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
