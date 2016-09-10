@@ -3,7 +3,7 @@ import { AllModule, AnyEvent, IContext } from "./chat-module";
 
 export class ReadNotificationModule extends AllModule {
     public getHelpLine(): string {
-        return undefined;
+        return "Sends read receipts";
     }
 
     public processMessage(ctx: IContext<AnyEvent>): void {
