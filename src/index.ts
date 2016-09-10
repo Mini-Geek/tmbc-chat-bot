@@ -16,6 +16,7 @@ import { NameChangeModule } from "./chat-modules/name-change";
 import { ReadNotificationModule } from "./chat-modules/read-notification";
 import { SecretModule } from "./chat-modules/secret";
 import { SleepModule } from "./chat-modules/sleep";
+import { YouTubeLinksModule } from "./chat-modules/youtube-links";
 
 winston.add(
     winston.transports.File,
@@ -41,6 +42,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new NameChangeModule(),
     new EmojiChangeModule(),
     new ReadNotificationModule(),
+    new YouTubeLinksModule(),
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     winston.error("Please fill in credentials.ts with the account's email and password.");
