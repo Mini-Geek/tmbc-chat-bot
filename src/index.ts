@@ -13,7 +13,7 @@ import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 import { MotwModule } from "./chat-modules/motw";
 import { NameChangeModule } from "./chat-modules/name-change";
-// import { ReadNotificationModule } from "./chat-modules/read-notification";
+import { ReadNotificationModule } from "./chat-modules/read-notification";
 import { SecretModule } from "./chat-modules/secret";
 import { SleepModule } from "./chat-modules/sleep";
 import { YouTubeLinksModule } from "./chat-modules/youtube-links";
@@ -41,7 +41,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new SecretModule(),
     new NameChangeModule(),
     new EmojiChangeModule(),
-    // new ReadNotificationModule(),
+    new ReadNotificationModule(),
     new YouTubeLinksModule(),
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
