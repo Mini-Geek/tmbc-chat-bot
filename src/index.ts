@@ -49,7 +49,7 @@ if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     process.exit();
 }
 
-login(credentials, (loginErr, api) => {
+let runLogin = () => login(credentials, (loginErr, api) => {
     if (loginErr) {
         return winston.error("Error logging in", loginErr);
     }
@@ -97,7 +97,13 @@ login(credentials, (loginErr, api) => {
     let messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
         return m.getMessageType() === "all" || m.getMessageType() === type;
     };
-    process.on("SIGINT", () => {
-        shutdown("SIGINT detected, logging out");
-    });
+    let sigintCallback = () => shutdown("SIGINT detected, logging out");
+    process.on("SIGINT", sigintCallback);
+    setTimeout(() => {
+        process.removeListener("SIGINT", sigintCallback);
+        winston.info("Logging out and in to keep the connection fresh");
+        stopListening();
+        api.logout(() => runLogin());
+    }, 86400 * 1000); // 24 hours
 });
+runLogin();
