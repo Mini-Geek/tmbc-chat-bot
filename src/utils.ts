@@ -8,9 +8,10 @@ export class Utils {
      */
     public static sendMessage(
         ctx: IContext<AnyEvent>,
-        yourMessage: string): void {
+        yourMessage: string,
+        threadId: string = ctx.message.threadID): void {
         winston.info(`Sending ${yourMessage} in response to this:`, ctx.message);
-        ctx.api.sendMessage(yourMessage, ctx.message.threadID);
+        ctx.api.sendMessage(yourMessage, threadId);
     }
 
     public static isMessage(event: AnyEvent): event is fbapi.MessageEvent {

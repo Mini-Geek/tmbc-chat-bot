@@ -7,14 +7,15 @@ import { ChaterinaInteractionModule } from "./chat-modules/chaterina";
 import { CountModule } from "./chat-modules/count";
 import { DebugModule } from "./chat-modules/debug";
 import { DieModule } from "./chat-modules/die";
-import { EmojiChangeModule } from "./chat-modules/emoji-change";
+// import { EmojiChangeModule } from "./chat-modules/emoji-change";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
-import { MotwModule } from "./chat-modules/motw";
+// import { MotwModule } from "./chat-modules/motw";
 import { NameChangeModule } from "./chat-modules/name-change";
-import { ReadNotificationModule } from "./chat-modules/read-notification";
 import { SecretModule } from "./chat-modules/secret";
+import { SayModule } from "./chat-modules/see-n-say";
+import { ShrugModule } from "./chat-modules/shrug";
 import { SleepModule } from "./chat-modules/sleep";
 import { YouTubeLinksModule } from "./chat-modules/youtube-links";
 
@@ -30,7 +31,7 @@ let sleepModule = new SleepModule();
 let sleeping = false;
 let chatModules: IChatModule<AnyEvent>[] = [
     new HelpModule(),
-    new MotwModule(),
+    // new MotwModule(),
     new HelloModule(),
     new LinksModule(),
     new CountModule(),
@@ -40,8 +41,9 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new ChaterinaInteractionModule(),
     new SecretModule(),
     new NameChangeModule(),
-    new EmojiChangeModule(),
-    new ReadNotificationModule(),
+    // new EmojiChangeModule(),
+    new SayModule(),
+    new ShrugModule(),
     new YouTubeLinksModule(),
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
