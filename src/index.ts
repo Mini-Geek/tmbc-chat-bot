@@ -14,6 +14,7 @@ import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 // import { MotwModule } from "./chat-modules/motw";
 import { NameChangeModule } from "./chat-modules/name-change";
+import { SearchModule } from "./chat-modules/search";
 import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
 import { ShrugModule } from "./chat-modules/shrug";
@@ -43,6 +44,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new SecretModule(),
     new NameChangeModule(),
     new EmojiChangeModule(),
+    new SearchModule(),
     new SayModule(),
     new ShrugModule(),
     new ClarifyModule(),
@@ -52,12 +54,16 @@ if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     winston.error("Please fill in credentials.ts with the account's email and password.");
     process.exit();
 }
+if (credentials.selfOnly) {
+    chatModules = chatModules.filter(m => m.handleSelf());
+}
 
 let runLogin = () => login(credentials, (loginErr, api) => {
     if (loginErr) {
         return winston.error("Error logging in", loginErr);
     }
-    api.setOptions({ listenEvents: true });
+    let myUserId = api.getCurrentUserID();
+    api.setOptions({ listenEvents: true, selfListen: true });
 
     let stopListening = api.listen((listenErr, message) => {
         if (listenErr) {
@@ -70,20 +76,20 @@ let runLogin = () => login(credentials, (loginErr, api) => {
             return winston.error("no threadID");
         }
         let ctx: IContext<any> = {
-                api: api,
-                chatModules: chatModules,
-                message: message,
-                setSleep: setSleep,
-                shutdown: shutdown,
-                sleeping: sleeping,
-            };
+            api: api,
+            chatModules: chatModules,
+            message: message,
+            setSleep: setSleep,
+            shutdown: shutdown,
+            sleeping: sleeping,
+        };
         if (sleeping) {
-            if (messageTypeMatch(sleepModule, message.type)) {
+            if (messageCheck(sleepModule, message)) {
                 sleepModule.processMessage(ctx);
             }
         } else {
             chatModules.forEach(m => {
-                if (messageTypeMatch(m, message.type)) {
+                if (messageCheck(m, message)) {
                     m.processMessage(ctx);
                 }
             });
@@ -98,8 +104,21 @@ let runLogin = () => login(credentials, (loginErr, api) => {
     let setSleep = (s: boolean) => {
         sleeping = s;
     };
+    let messageCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
+        return messageTypeMatch(m, ev.type) && selfCheck(m, ev);
+    }
     let messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
         return m.getMessageType() === "all" || m.getMessageType() === type;
+    };
+    let selfCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
+        if (m.handleSelf()) { return true; }
+
+        let msg = ev as login.MessageEvent;
+        if (msg.senderID && msg.senderID === myUserId) {
+            return false;
+        } else {
+            return true;
+        }
     };
     let sigintCallback = () => shutdown("SIGINT detected, logging out");
     process.on("SIGINT", sigintCallback);

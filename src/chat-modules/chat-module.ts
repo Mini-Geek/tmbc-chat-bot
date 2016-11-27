@@ -7,6 +7,7 @@ export interface IChatModule<T> {
     getMessageType(): string;
     getHelpLine(threadID: string): string;
     processMessage(ctx: IContext<T>): void;
+    handleSelf(): boolean;
 }
 export interface IContext<T> {
     api: fbapi.Api;
@@ -21,19 +22,23 @@ export abstract class EventModule implements IChatModule<fbapi.EventEvent> {
     public getMessageType(): string { return "event"; }
     public abstract getHelpLine(threadID: string): string;
     public abstract processMessage(ctx: IContext<fbapi.EventEvent>): void;
+    public handleSelf(): boolean { return false; }
 }
 export abstract class MessageModule implements IChatModule<fbapi.MessageEvent> {
     public getMessageType(): string { return "message"; }
     public abstract getHelpLine(threadID: string): string;
     public abstract processMessage(ctx: IContext<fbapi.MessageEvent>): void;
+    public handleSelf(): boolean { return false; }
 }
 export abstract class TypModule implements IChatModule<fbapi.TypEvent> {
     public getMessageType(): string { return "typ"; }
     public abstract getHelpLine(threadID: string): string;
     public abstract processMessage(ctx: IContext<fbapi.TypEvent>): void;
+    public handleSelf(): boolean { return false; }
 }
 export abstract class AllModule implements IChatModule<AnyEvent> {
     public getMessageType(): string { return "all"; }
     public abstract getHelpLine(threadID: string): string;
     public abstract processMessage(ctx: IContext<AnyEvent>): void;
+    public handleSelf(): boolean { return false; }
 }
