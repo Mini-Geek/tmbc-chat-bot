@@ -1,5 +1,6 @@
 # Login credentials
 credentials.ts
+credentials.hide*.ts
 
 # Built files
 build
