@@ -96,7 +96,7 @@ let runLogin = () => login(credentials, (loginErr, api) => {
     };
     let messageCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
         return messageTypeMatch(m, ev.type) && selfCheck(m, ev);
-    }
+    };
     let messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
         return m.getMessageType() === "all" || m.getMessageType() === type;
     };
