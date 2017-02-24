@@ -2,7 +2,6 @@ import fbapi = require("facebook-chat-api");
 import winston = require("winston");
 import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
-import { groups, userFriendlyName } from "./const";
 
 export class SearchModule extends MessageModule {
     private pattern: RegExp = new RegExp("^/search (.*)$", "i");
@@ -13,6 +12,7 @@ export class SearchModule extends MessageModule {
         upLimit: number,
         downLimit: number,
         messageIDs: { [messageIndex: number]: fbapi.InputID },
+        query: string,
     } = undefined;
     public handleSelf(): boolean { return true; }
     public getHelpLine(): string {
@@ -67,52 +67,54 @@ export class SearchModule extends MessageModule {
                         // };
                     }
                 };
-                let handleSnippets = (err: fbapi.ErrorObject, snippets: fbapi.Snippet[], offset: number) => {
-                    if (err) {
-                        winston.error("Error searching", err);
-                    }
-                    if (snippets) {
-                        winston.info("Search results", snippets);
-                        let response = "";
-                        let messageIDs: { [messageIndex: number]: fbapi.InputID } =
-                            this.lastState && this.lastState.messageIDs ? this.lastState.messageIDs : {};
-                        if (snippets.length > 0) {
-                            let index = 1;
-                            let skipped = 0;
-                            snippets.forEach(snippet => {
-                                if (!snippet.body ||
-                                    this.pattern.test(snippet.body) ||
-                                    snippet.body.indexOf("'/search more' for more results") > -1) {
-                                    skipped++;
-                                } else {
-                                    messageIDs[index] = snippet.message_id;
-                                    response += "#" + index + " at ";
-                                    response += snippet.timestamp_datetime + ": ";
-                                    response += snippet.body + "\n";
-                                    index++;
-                                }
-                            });
-                            if (skipped > 0) {
-                                response += "[" + skipped + " result(s) skipped]\n";
-                            }
-                            if (index > 1) {
-                                response += "'/search 1' for context on the first result, and so on\n";
-                            }
-                            response += "'/search more' for more results\n";
-                        } else {
-                            response = "No results found";
+                let handleSnippets =
+                    (err: fbapi.ErrorObject, snippets: fbapi.Snippet[], offset: number, query: string) => {
+                        if (err) {
+                            winston.error("Error searching", err);
                         }
-                        Utils.sendMessage(ctx, response);
-                        // Utils.sendMessage(ctx, "Found " + obj.length + " things: " + obj);
-                        this.lastState = {
-                            contextMessageID: undefined,
-                            downLimit: undefined,
-                            messageIDs: messageIDs,
-                            searchOffset: offset,
-                            threadID: ctx.message.threadID,
-                            upLimit: undefined,
-                        };
-                    }
+                        if (snippets) {
+                            winston.info("Search results", snippets);
+                            let response = "";
+                            let messageIDs: { [messageIndex: number]: fbapi.InputID } =
+                                this.lastState && this.lastState.messageIDs ? this.lastState.messageIDs : {};
+                            if (snippets.length > 0) {
+                                let index = 1;
+                                let skipped = 0;
+                                snippets.forEach(snippet => {
+                                    if (!snippet.body ||
+                                        this.pattern.test(snippet.body) ||
+                                        snippet.body.indexOf("'/search more' for more results") > -1) {
+                                        skipped++;
+                                    } else {
+                                        messageIDs[index] = snippet.message_id;
+                                        response += "#" + index + " at ";
+                                        response += snippet.timestamp_datetime + ": ";
+                                        response += snippet.body + "\n";
+                                        index++;
+                                    }
+                                });
+                                if (skipped > 0) {
+                                    response += "[" + skipped + " result(s) skipped]\n";
+                                }
+                                if (index > 1) {
+                                    response += "'/search 1' for context on the first result, and so on\n";
+                                }
+                                response += "'/search more' for more results\n";
+                            } else {
+                                response = "No results found";
+                            }
+                            Utils.sendMessage(ctx, response);
+                            // Utils.sendMessage(ctx, "Found " + obj.length + " things: " + obj);
+                            this.lastState = {
+                                contextMessageID: undefined,
+                                downLimit: undefined,
+                                messageIDs: messageIDs,
+                                query: query,
+                                searchOffset: offset,
+                                threadID: ctx.message.threadID,
+                                upLimit: undefined,
+                            };
+                        }
                 };
 
                 let matches = this.pattern.exec(ctx.message.body);
@@ -124,8 +126,8 @@ export class SearchModule extends MessageModule {
                     if (msg === "more") {
                         // search more
                         let newOffset = this.lastState.searchOffset + 5;
-                        ctx.api.searchForMessages(msg, ctx.message.threadID, ctx.message.isGroup,
-                            newOffset, (e, s) => handleSnippets(e, s, newOffset));
+                        ctx.api.searchForMessages(this.lastState.query, ctx.message.threadID, ctx.message.isGroup,
+                            newOffset, (e, s) => handleSnippets(e, s, newOffset, this.lastState.query));
                     } else if (!isNaN(+msg)) {
                         // context
                         let messageID = this.lastState.messageIDs[+msg];
@@ -154,7 +156,7 @@ export class SearchModule extends MessageModule {
                 if (!specialMessage) {
                     // initial search
                     ctx.api.searchForMessages(msg, ctx.message.threadID, ctx.message.isGroup,
-                        0, (e, s) => handleSnippets(e, s, 0));
+                        0, (e, s) => handleSnippets(e, s, 0, msg));
                 }
             }
         }
