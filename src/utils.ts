@@ -4,7 +4,7 @@ import { AnyEvent, IContext } from "./chat-modules/chat-module";
 
 export class Utils {
     /**
-     * Logs and sends a message.
+     * Logs and sends a message using ctx to simplify things.
      */
     public static sendMessage(
         ctx: IContext<AnyEvent>,
@@ -12,6 +12,18 @@ export class Utils {
         threadId: string = ctx.message.threadID): void {
         winston.info(`Sending ${yourMessage} in response to this:`, ctx.message);
         ctx.api.sendMessage(yourMessage, threadId);
+    }
+
+    /**
+     * Logs and sends a message with explicitly-specified details.
+     */
+    public static sendMessageDirect(
+        api: fbapi.Api,
+        yourMessage: string,
+        threadId: string,
+        messageReason: any): void {
+        winston.info(`Sending ${yourMessage} to ${threadId} in response to this:`, messageReason);
+        api.sendMessage(yourMessage, threadId);
     }
 
     public static isMessage(event: AnyEvent): event is fbapi.MessageEvent {

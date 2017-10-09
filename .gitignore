@@ -12,6 +12,7 @@ npm-debug.log*
 
 # Runtime data
 motw-data
+videocheck-data
 pids
 *.pid
 *.seed
