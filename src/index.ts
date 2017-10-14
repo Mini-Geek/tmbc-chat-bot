@@ -4,13 +4,10 @@ import { credentials } from "./credentials";
 import "winston-daily-rotate-file";
 
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
-import { ClarifyModule } from "./chat-modules/clarify";
 import { DieModule } from "./chat-modules/die";
-import { EmojiChangeModule } from "./chat-modules/emoji-change";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
-import { NameChangeModule } from "./chat-modules/name-change";
 import { SearchModule } from "./chat-modules/search";
 import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
@@ -38,12 +35,9 @@ let chatModules: IChatModule<AnyEvent>[] = [
     sleepModule,
     new DieModule(),
     new SecretModule(),
-    new NameChangeModule(),
-    new EmojiChangeModule(),
     new SearchModule(),
     new SayModule(),
     new ShrugModule(),
-    new ClarifyModule(),
     videosModule,
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
