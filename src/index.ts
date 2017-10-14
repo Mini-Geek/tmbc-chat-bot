@@ -1,6 +1,7 @@
 import login = require("facebook-chat-api");
 import winston = require("winston");
 import { credentials } from "./credentials";
+import "winston-daily-rotate-file";
 
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
 import { ClarifyModule } from "./chat-modules/clarify";
@@ -18,10 +19,12 @@ import { SleepModule } from "./chat-modules/sleep";
 import { VideosModule } from "./chat-modules/videos";
 
 winston.add(
-    winston.transports.File,
+    winston.transports.DailyRotateFile,
     {
+        datePattern: "yyyy-MM.",
         filename: "logs/chat-bot.log",
-        level: "warn",
+        level: "info",
+        prepend: true,
     });
 winston.warn("starting up!");
 
@@ -119,6 +122,7 @@ let runLogin = () => login(credentials, (loginErr, api) => {
     setTimeout(() => {
         process.removeListener("SIGINT", sigintCallback);
         winston.info("Logging out and in to keep the connection fresh");
+        clearInterval(videoRepeater);
         stopListening();
         api.logout(() => runLogin());
     }, 86400 * 1000); // 24 hours

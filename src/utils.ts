@@ -10,8 +10,7 @@ export class Utils {
         ctx: IContext<AnyEvent>,
         yourMessage: string,
         threadId: string = ctx.message.threadID): void {
-        winston.info(`Sending ${yourMessage} in response to this:`, ctx.message);
-        ctx.api.sendMessage(yourMessage, threadId);
+        Utils.sendMessageDirect(ctx.api, yourMessage, threadId, ctx.message);
     }
 
     /**
