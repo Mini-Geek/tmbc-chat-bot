@@ -11,7 +11,7 @@ export class VideosModule extends MessageModule {
         "UC0jIctUPBK6lHw4AYnGHvCA", // Blimey Cow
         "UCUgSn3_q1PF6RcPHkuVHFHA", // Jordan Taylor
         "UCWKvCiwesNEBLNioZfrB5mQ", // Say Goodnight Kevin
-        "UC9rIUAMjXWvt4Gs-Nwn7cig", // Pun Diddley
+        "UC9rIUAMjXWvt4Gs-Nwn7cig", // Chris Howard
         "UCu9cw1po780fcf0bgPbrqCg", // Adler Davidson
     ];
     private storageInitialized = false;
@@ -44,7 +44,7 @@ export class VideosModule extends MessageModule {
         let channelsDone = 0;
         this.channelIds.forEach(channelId => {
             let path = "/youtube/v3/search?part=snippet&type=video&order=date&" +
-            "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
+            "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle%2CliveBroadcastContent))&" +
             `channelId=${channelId}&key=${credentials.youtubeApiKey}`;
             const req = https.get({
                 host: "www.googleapis.com",
@@ -64,8 +64,16 @@ export class VideosModule extends MessageModule {
                     bodyJson.items.forEach((item: IYouTubeSearchItem) => {
                         if (item.id && item.id.videoId) {
                             if (data[threadID].indexOf(item.id.videoId) === -1) {
-                                messages.push(`New ${item.snippet.channelTitle} video "${item.snippet.title}": ` +
-                                    `https://youtu.be/${item.id.videoId}`);
+                                let introWord: string;
+                                if (item.snippet.liveBroadcastContent === "live") {
+                                    introWord = "Live";
+                                } else if (item.snippet.liveBroadcastContent === "upcoming") {
+                                    introWord = "Upcoming";
+                                } else {
+                                    introWord = "New";
+                                }
+                                messages.push(`${introWord} ${item.snippet.channelTitle} video ` +
+                                    `"${item.snippet.title}": https://youtu.be/${item.id.videoId}`);
                                 data[threadID].push(item.id.videoId);
                                 channelDataDirty = true;
                             }
@@ -101,5 +109,5 @@ interface IStoredData {
 }
 interface IYouTubeSearchItem {
     id: { videoId: string };
-    snippet: { title: string, channelTitle: string };
+    snippet: { title: string, channelTitle: string, liveBroadcastContent: string };
 }
