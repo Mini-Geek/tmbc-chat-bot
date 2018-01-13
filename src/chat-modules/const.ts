@@ -2,8 +2,6 @@
  * Settings for message counts, emojis, and titles for different conversations.
  */
 interface IThreadDetail {
-    preferredEmoji: string;
-    preferredTitle: string;
     threadStrId: string;
     stalkTarget: string;
     stalkMessage: string;
@@ -11,16 +9,12 @@ interface IThreadDetail {
 export const groups: {
     [key: string]: IThreadDetail
 } = {
-    "890328284337788": {
-        preferredEmoji: "🍻",
-        preferredTitle: "They Might Be Christians",
+    "890328284337788": { // TMBC
         stalkMessage: "ALL HAIL The Supreme Cowmander, The False Prophet, The First of His Name: Josh",
         stalkTarget: "180201030",
         threadStrId: "tmbc",
     },
-    "1170697212952081": {
-        preferredEmoji: "🍻",
-        preferredTitle: "They Might Be Coders",
+    "1170697212952081": { // They Might Be Coders
         stalkMessage: "Oh hai Tim",
         stalkTarget: "100001387064213",
         threadStrId: "tmbcoders",
