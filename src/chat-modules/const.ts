@@ -1,13 +1,8 @@
 /**
- * Settings for message counts, emojis, and titles for different conversations.
+ * Settings for specific conversations.
  */
-interface IThreadDetail {
-    threadStrId: string;
-    stalkTarget: string;
-    stalkMessage: string;
-}
 export const groups: {
-    [key: string]: IThreadDetail
+    [key: string]: { threadStrId: string; stalkTarget: string; stalkMessage: string; }
 } = {
     "890328284337788": { // TMBC
         stalkMessage: "ALL HAIL The Supreme Cowmander, The False Prophet, The First of His Name: Josh",
@@ -27,4 +22,4 @@ export const userFriendlyName = "Robby";
 /**
  * Pattern for listening for people talking to this bot.
  */
-export const regexNamePattern = "(Robby( A[sz]imov)?)";
+export const regexNamePattern = "(@?Robby( A[sz]imov)?)";
