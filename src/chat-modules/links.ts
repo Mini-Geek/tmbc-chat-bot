@@ -11,6 +11,7 @@ export class LinksModule extends MessageModule {
         if (ctx.message.body === "/links") {
             Utils.sendMessage(ctx,
                 "https://bit.ly/TMBCChatGuide" + "\n" +
+                "https://www.blimeycow.com/cowmoonity" + "\n" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot" + "\n" +
                 "https://bit.ly/TMBC-archive-2016-12-09");
         }

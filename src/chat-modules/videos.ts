@@ -5,6 +5,7 @@ import winston = require("winston");
 import { credentials } from "../credentials";
 import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
+import { StorageModule } from "./storage";
 
 export class VideosModule extends MessageModule {
     private channelIds: string[] = [
@@ -14,21 +15,16 @@ export class VideosModule extends MessageModule {
         "UC9rIUAMjXWvt4Gs-Nwn7cig", // Chris Howard
         "UCu9cw1po780fcf0bgPbrqCg", // Adler Davidson
     ];
-    private storageInitialized = false;
 
-    public constructor() {
-        super();
-        storage.init({ dir: "../../../../videocheck-data" }, () => {
-            this.storageInitialized = true;
-        });
-    }
+    private fileName: string = "videocheck-data.json";
+
     public getHelpLine(): string {
         return "/videocheck: Sends links for any recent Blimey Cow (and related) videos " +
             "(also runs automatically every 5 minutes)";
     }
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
-        if (this.storageInitialized && ctx.message.body === "/videocheck") {
+        if (StorageModule.storageInitialized && ctx.message.body === "/videocheck") {
             this.runCheck(ctx.api, ctx.message.threadID, false, ctx.message);
         }
     }
@@ -55,7 +51,7 @@ export class VideosModule extends MessageModule {
                     body += data;
                 });
                 res.on("end", () => {
-                    let data: IStoredData = storage.getItemSync("data.json") || {};
+                    let data: IStoredData = storage.getItemSync(this.fileName) || {};
                     if (!data.hasOwnProperty(threadID)) {
                         data[threadID] = [];
                     }
@@ -80,7 +76,7 @@ export class VideosModule extends MessageModule {
                         }
                     });
                     if (channelDataDirty) {
-                        storage.setItemSync("data.json", data);
+                        storage.setItemSync(this.fileName, data);
                     }
                     channelsDone++;
                     if (channelsDone === this.channelIds.length) {

@@ -3,7 +3,9 @@ import winston = require("winston");
 import { credentials } from "./credentials";
 import "winston-daily-rotate-file";
 
+import { AvocadoModule } from "./chat-modules/avocado";
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
+import { ChristianModule } from "./chat-modules/christian";
 import { DieModule } from "./chat-modules/die";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
@@ -13,6 +15,8 @@ import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
 import { ShrugModule } from "./chat-modules/shrug";
 import { SleepModule } from "./chat-modules/sleep";
+import { StalkerModule } from "./chat-modules/stalker";
+import { StorageModule } from "./chat-modules/storage";
 import { VideosModule } from "./chat-modules/videos";
 
 winston.add(
@@ -25,6 +29,7 @@ winston.add(
     });
 winston.warn("starting up!");
 
+StorageModule.init();
 let videosModule = new VideosModule();
 let sleepModule = new SleepModule();
 let sleeping = false;
@@ -32,12 +37,15 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new HelpModule(),
     new HelloModule(),
     new LinksModule(),
+    new ChristianModule(),
     sleepModule,
     new DieModule(),
     new SecretModule(),
     new SearchModule(),
     new SayModule(),
     new ShrugModule(),
+    new StalkerModule(),
+    new AvocadoModule(),
     videosModule,
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
