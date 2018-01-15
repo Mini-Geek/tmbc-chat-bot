@@ -10,8 +10,10 @@ export class LinksModule extends MessageModule {
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body === "/links") {
             Utils.sendMessage(ctx,
-                "https://bit.ly/TmbcChatGuide" + "\n" +
-                "https://www.blimeycow.com/cowmoonity" + "\n\n" +
+                "Chat Guide: " +
+                "https://docs.google.com/document/d/1wkVjnSpfyDuD5fvnUjhUVVV8Ow-0ZwhLhQeaHAs72oI/edit" + "\n\n" +
+                "Other links: " +
+                "https://www.blimeycow.com/cowmoonity" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot" + "\n" +
                 "https://bit.ly/TMBC-archive-2016-12-09");
         }
