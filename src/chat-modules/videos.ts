@@ -40,7 +40,7 @@ export class VideosModule extends MessageModule {
         let channelsDone = 0;
         this.channelIds.forEach(channelId => {
             let path = "/youtube/v3/search?part=snippet&type=video&order=date&" +
-            "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle%2CliveBroadcastContent))&" +
+            "fields=items(id%2FvideoId%2Csnippet(channelTitle%2CliveBroadcastContent%2CpublishedAt%2Ctitle))&" +
             `channelId=${channelId}&key=${credentials.youtubeApiKey}`;
             const req = https.get({
                 host: "www.googleapis.com",
@@ -60,16 +60,20 @@ export class VideosModule extends MessageModule {
                     bodyJson.items.forEach((item: IYouTubeSearchItem) => {
                         if (item.id && item.id.videoId) {
                             if (data[threadID].indexOf(item.id.videoId) === -1) {
-                                let introWord: string;
-                                if (item.snippet.liveBroadcastContent === "live") {
-                                    introWord = "Live";
-                                } else if (item.snippet.liveBroadcastContent === "upcoming") {
-                                    introWord = "Upcoming";
+                                if (this.ageInMillis(item.snippet.publishedAt) > 86400 * 1000) {
+                                    winston.warn("Found old video in video check", item);
                                 } else {
-                                    introWord = "New";
+                                    let introWord: string;
+                                    if (item.snippet.liveBroadcastContent === "live") {
+                                        introWord = "Live";
+                                    } else if (item.snippet.liveBroadcastContent === "upcoming") {
+                                        introWord = "Upcoming";
+                                    } else {
+                                        introWord = "New";
+                                    }
+                                    messages.push(`${introWord} ${item.snippet.channelTitle} video ` +
+                                        `"${item.snippet.title}": https://youtu.be/${item.id.videoId}`);
                                 }
-                                messages.push(`${introWord} ${item.snippet.channelTitle} video ` +
-                                    `"${item.snippet.title}": https://youtu.be/${item.id.videoId}`);
                                 data[threadID].push(item.id.videoId);
                                 channelDataDirty = true;
                             }
@@ -99,11 +103,17 @@ export class VideosModule extends MessageModule {
             req.end();
         });
     }
+
+    private ageInMillis(publishedAt: string): number {
+        let now = new Date();
+        let diff = Math.abs(now.getTime() - new Date(publishedAt).getTime());
+        return diff;
+    }
 }
 interface IStoredData {
     [threadId: string]: string[];
 }
 interface IYouTubeSearchItem {
     id: { videoId: string };
-    snippet: { title: string, channelTitle: string, liveBroadcastContent: string };
+    snippet: { title: string, channelTitle: string, liveBroadcastContent: string, publishedAt: string };
 }
