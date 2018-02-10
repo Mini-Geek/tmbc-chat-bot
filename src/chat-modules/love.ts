@@ -3,7 +3,7 @@ import { Utils } from "../utils";
 import { IContext, MessageModule } from "./chat-module";
 
 export class LoveModule extends MessageModule {
-    private ilyPattern: RegExp = new RegExp("^I love you\\b", "i");
+    private ilyPattern: RegExp = new RegExp("^I love (y'?a'?ll|you(|s|se))\\b", "i");
     private petNames: string[] = [
         "babe-honey",
         "baby",
