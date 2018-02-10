@@ -10,6 +10,7 @@ import { DieModule } from "./chat-modules/die";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
+import { LoveModule } from "./chat-modules/love";
 import { SearchModule } from "./chat-modules/search";
 import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
@@ -47,6 +48,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new StalkerModule(),
     new AvocadoModule(),
     videosModule,
+    new LoveModule(),
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     winston.error("Please fill in credentials.ts with the account's email and password.");
