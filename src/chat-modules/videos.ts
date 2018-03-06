@@ -12,7 +12,6 @@ export class VideosModule extends MessageModule {
         "UC0jIctUPBK6lHw4AYnGHvCA", // Blimey Cow
         "UCUgSn3_q1PF6RcPHkuVHFHA", // Jordan Taylor
         "UCWKvCiwesNEBLNioZfrB5mQ", // Say Goodnight Kevin
-        "UC9rIUAMjXWvt4Gs-Nwn7cig", // Chris Howard
         "UCu9cw1po780fcf0bgPbrqCg", // Adler Davidson
     ];
 
