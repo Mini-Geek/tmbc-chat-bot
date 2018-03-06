@@ -15,7 +15,7 @@ export class LinksModule extends MessageModule {
                 "Other links: " +
                 "https://www.blimeycow.com/cowmoonity" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot" + "\n" +
-                "https://bit.ly/TMBC-archive-2016-12-09");
+                "https://storage.googleapis.com/tmbc/tmbc-archive-indexed/index.htm");
         }
     }
 }
