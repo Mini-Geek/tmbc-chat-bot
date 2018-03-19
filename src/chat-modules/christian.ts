@@ -8,15 +8,15 @@ export class ChristianModule extends MessageModule {
     }
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
-        if (ctx.message.body && ctx.message.body[0] === "/") {
+        if (ctx.message.body) {
             let body = ctx.message.body.toLowerCase();
-            if (body === "/christian") {
+            if (body.indexOf("/christian") > -1) {
                 Utils.sendMessage(ctx, "IT'S CHR" + this.repeat("I", 11) + "ISTII" + this.repeat("A", 29) + "N");
-            } else if (body === "/notchristian") {
+            } else if (body.indexOf("/notchristian") > -1) {
                 Utils.sendMessage(ctx, "IT'S NOT CHR" + this.repeat("I", 11) + "ISTII" + this.repeat("A", 29) + "N");
-            } else if (body === "/kristen") {
+            } else if (body.indexOf("/kristen") > -1) {
                 Utils.sendMessage(ctx, "IT'S KR" + this.repeat("I", 11) + "IST" + this.repeat("E", 31) + "N");
-            } else if (body === "/kristin") {
+            } else if (body.indexOf("/kristin") > -1) {
                 Utils.sendMessage(ctx, "IT'S NOT KR" + this.repeat("I", 11) + "IST" + this.repeat("I", 31) + "N");
             }
         }
