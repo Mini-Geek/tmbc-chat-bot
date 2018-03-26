@@ -3,6 +3,7 @@ import winston = require("winston");
 import { credentials } from "./credentials";
 import "winston-daily-rotate-file";
 
+import { AdminModule } from "./chat-modules/admin";
 import { AvocadoModule } from "./chat-modules/avocado";
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
 import { ChristianModule } from "./chat-modules/christian";
@@ -38,6 +39,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     new HelpModule(),
     new HelloModule(),
     new LinksModule(),
+    new AdminModule(),
     new ChristianModule(),
     sleepModule,
     new DieModule(),

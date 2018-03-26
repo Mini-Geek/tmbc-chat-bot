@@ -1,5 +1,6 @@
 import fbapi = require("facebook-chat-api");
 import { Utils } from "../utils";
+import { AdminModule } from "./admin";
 import { IContext, MessageModule } from "./chat-module";
 
 export class LinksModule extends MessageModule {
@@ -13,6 +14,7 @@ export class LinksModule extends MessageModule {
                 "Chat Guide: " +
                 "https://docs.google.com/document/d/1wkVjnSpfyDuD5fvnUjhUVVV8Ow-0ZwhLhQeaHAs72oI/edit" + "\n\n" +
                 "Other links: " +
+                "Admin Guide: " + AdminModule.AdminUrl +
                 "https://www.blimeycow.com/cowmoonity" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot" + "\n" +
                 "https://storage.googleapis.com/tmbc/tmbc-archive-indexed/index.htm");
