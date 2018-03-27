@@ -34,28 +34,28 @@ export class VideosModule extends MessageModule {
     }
 
     private runCheck(api: fbapi.Api, threadID: string, isAuto: boolean, message: fbapi.MessageEvent): void {
-        let messageReason = isAuto ? "automatic timer" : message;
-        let messages: string[] = [];
+        const messageReason = isAuto ? "automatic timer" : message;
+        const messages: string[] = [];
         let channelsDone = 0;
-        this.channelIds.forEach(channelId => {
-            let path = "/youtube/v3/search?part=snippet&type=video&order=date&" +
+        this.channelIds.forEach((channelId) => {
+            const path = "/youtube/v3/search?part=snippet&type=video&order=date&" +
             "fields=items(id%2FvideoId%2Csnippet(channelTitle%2CliveBroadcastContent%2CpublishedAt%2Ctitle))&" +
             `channelId=${channelId}&key=${credentials.youtubeApiKey}`;
             const req = https.get({
                 host: "www.googleapis.com",
-                path: path,
-            }, res => {
+                path,
+            }, (res) => {
                 let body = "";
                 res.on("data", (data: string) => {
                     body += data;
                 });
                 res.on("end", () => {
-                    let data: IStoredData = storage.getItemSync(this.fileName) || {};
+                    const data: IStoredData = storage.getItemSync(this.fileName) || {};
                     if (!data.hasOwnProperty(threadID)) {
                         data[threadID] = [];
                     }
                     let channelDataDirty = false;
-                    let bodyJson = JSON.parse(body);
+                    const bodyJson = JSON.parse(body);
                     bodyJson.items.forEach((item: IYouTubeSearchItem) => {
                         if (item.id && item.id.videoId) {
                             if (data[threadID].indexOf(item.id.videoId) === -1) {
@@ -104,8 +104,8 @@ export class VideosModule extends MessageModule {
     }
 
     private ageInMillis(publishedAt: string): number {
-        let now = new Date();
-        let diff = Math.abs(now.getTime() - new Date(publishedAt).getTime());
+        const now = new Date();
+        const diff = Math.abs(now.getTime() - new Date(publishedAt).getTime());
         return diff;
     }
 }

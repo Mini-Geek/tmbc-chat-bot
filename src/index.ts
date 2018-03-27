@@ -1,7 +1,7 @@
 import login = require("facebook-chat-api");
 import winston = require("winston");
-import { credentials } from "./credentials";
 import "winston-daily-rotate-file";
+import { credentials } from "./credentials";
 
 import { AdminModule } from "./chat-modules/admin";
 import { AvocadoModule } from "./chat-modules/avocado";
@@ -12,7 +12,7 @@ import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 import { LoveModule } from "./chat-modules/love";
-import { SearchModule } from "./chat-modules/search";
+// import { SearchModule } from "./chat-modules/search";
 import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
 import { ShrugModule } from "./chat-modules/shrug";
@@ -32,10 +32,10 @@ winston.add(
 winston.warn("starting up!");
 
 StorageModule.init();
-let videosModule = new VideosModule();
-let sleepModule = new SleepModule();
+const videosModule = new VideosModule();
+const sleepModule = new SleepModule();
 let sleeping = false;
-let chatModules: IChatModule<AnyEvent>[] = [
+let chatModules: Array<IChatModule<AnyEvent>> = [
     new HelpModule(),
     new HelloModule(),
     new LinksModule(),
@@ -44,7 +44,7 @@ let chatModules: IChatModule<AnyEvent>[] = [
     sleepModule,
     new DieModule(),
     new SecretModule(),
-    new SearchModule(),
+    // new SearchModule(),
     new SayModule(),
     new ShrugModule(),
     new StalkerModule(),
@@ -57,17 +57,17 @@ if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     process.exit();
 }
 if (credentials.selfOnly) {
-    chatModules = chatModules.filter(m => m.handleSelf());
+    chatModules = chatModules.filter((m) => m.handleSelf());
 }
 
-let runLogin = () => login(credentials, (loginErr, api) => {
+const runLogin = () => login(credentials, (loginErr, api) => {
     if (loginErr) {
         return winston.error("Error logging in", loginErr);
     }
-    let myUserId = api.getCurrentUserID();
+    const myUserId = api.getCurrentUserID();
     api.setOptions({ listenEvents: true, selfListen: true });
 
-    let stopListening = api.listen((listenErr, message) => {
+    const stopListening = api.listen((listenErr, message) => {
         if (listenErr) {
             return winston.error("Error listening", listenErr);
         }
@@ -77,20 +77,20 @@ let runLogin = () => login(credentials, (loginErr, api) => {
         if (!message.threadID) {
             return winston.error("no threadID");
         }
-        let ctx: IContext<any> = {
-            api: api,
-            chatModules: chatModules,
-            message: message,
-            setSleep: setSleep,
-            shutdown: shutdown,
-            sleeping: sleeping,
+        const ctx: IContext<any> = {
+            api,
+            chatModules,
+            message,
+            setSleep,
+            shutdown,
+            sleeping,
         };
         if (sleeping) {
             if (messageCheck(sleepModule, message)) {
                 sleepModule.processMessage(ctx);
             }
         } else {
-            chatModules.forEach(m => {
+            chatModules.forEach((m) => {
                 if (messageCheck(m, message)) {
                     m.processMessage(ctx);
                 }
@@ -98,32 +98,32 @@ let runLogin = () => login(credentials, (loginErr, api) => {
         }
     });
 
-    let shutdown = (reason: string) => {
+    const shutdown = (reason: string) => {
         winston.warn(reason);
         stopListening();
         clearInterval(videoRepeater);
         api.logout(() => process.exit(0));
     };
-    let setSleep = (s: boolean) => {
+    const setSleep = (s: boolean) => {
         sleeping = s;
     };
-    let messageCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
+    const messageCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
         return messageTypeMatch(m, ev.type) && selfCheck(m, ev);
     };
-    let messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
+    const messageTypeMatch = (m: IChatModule<AnyEvent>, type: string): boolean => {
         return m.getMessageType() === "all" || m.getMessageType() === type;
     };
-    let selfCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
+    const selfCheck = (m: IChatModule<AnyEvent>, ev: login.Event): boolean => {
         if (m.handleSelf()) { return true; }
 
-        let msg = ev as login.MessageEvent;
+        const msg = ev as login.MessageEvent;
         if (msg.senderID && msg.senderID === myUserId) {
             return false;
         } else {
             return true;
         }
     };
-    let sigintCallback = () => shutdown("SIGINT detected, logging out");
+    const sigintCallback = () => shutdown("SIGINT detected, logging out");
     process.on("SIGINT", sigintCallback);
     setTimeout(() => {
         process.removeListener("SIGINT", sigintCallback);
@@ -132,7 +132,7 @@ let runLogin = () => login(credentials, (loginErr, api) => {
         stopListening();
         api.logout(() => runLogin());
     }, 86400 * 1000); // 24 hours
-    let videoRepeater = setInterval(() => {
+    const videoRepeater = setInterval(() => {
         videosModule.autoCheck(api);
     }, 300 * 1000); // 5 minutes
 });

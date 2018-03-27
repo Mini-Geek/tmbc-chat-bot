@@ -9,7 +9,7 @@ export class HelpModule extends MessageModule {
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body && ctx.message.body === "/help") {
-            let help = ctx.chatModules.map(m => m.getHelpLine(ctx.message.threadID)).filter(x => !!x).join("\n");
+            const help = ctx.chatModules.map((m) => m.getHelpLine(ctx.message.threadID)).filter((x) => !!x).join("\n");
             Utils.sendMessage(ctx, help);
         }
     }

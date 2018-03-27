@@ -15,12 +15,9 @@ export class AdminModule extends MessageModule {
         if (ctx.message.body === "/admin info") {
             Utils.sendMessage(ctx, AdminModule.AdminUrl);
         } else if (ctx.message.body.indexOf("/admin request") === 0) {
-            let message: string;
-            if (ctx.message.body === "/admin request") {
-                message = "Somebody asked for y'all";
-            } else {
-                message = "Message from chat: " + ctx.message.body.substring("/admin request ".length);
-            }
+            const message = (ctx.message.body === "/admin request")
+                            ? "Somebody asked for y'all"
+                            : "Message from chat: " + ctx.message.body.substring("/admin request ".length);
             Utils.sendMessage(ctx, message, AdminModule.AdminChatId);
             Utils.sendMessage(ctx, `Okay, I told the admins "${message}".`);
         }

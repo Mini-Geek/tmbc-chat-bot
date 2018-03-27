@@ -28,8 +28,8 @@ export class SearchModule extends MessageModule {
         if (ctx.message.body) {
             if (this.pattern.test(ctx.message.body)) {
 
-                let handleMessages = (err: fbapi.ErrorObject, messages: fbapi.Message[], messageID: fbapi.InputID,
-                        limit: number, direction: string) => {
+                const handleMessages = (err: fbapi.ErrorObject, messages: fbapi.Message[], messageID: fbapi.InputID,
+                                        limit: number, direction: string) => {
                     if (err) {
                         winston.error("Error searching msg context", err);
                     }
@@ -38,7 +38,7 @@ export class SearchModule extends MessageModule {
                         let response = "";
                         if (messages.length > 0) {
                             response += "'/search up' for more messages\n";
-                            messages.forEach(message => {
+                            messages.forEach((message) => {
                                 response += message.timestamp_datetime + ": ";
                                 response += message.body + "\n";
                             });
@@ -67,7 +67,7 @@ export class SearchModule extends MessageModule {
                         // };
                     }
                 };
-                let handleSnippets =
+                const handleSnippets =
                     (err: fbapi.ErrorObject, snippets: fbapi.Snippet[], offset: number, query: string) => {
                         if (err) {
                             winston.error("Error searching", err);
@@ -75,12 +75,12 @@ export class SearchModule extends MessageModule {
                         if (snippets) {
                             winston.info("Search results", snippets);
                             let response = "";
-                            let messageIDs: { [messageIndex: number]: fbapi.InputID } =
+                            const messageIDs: { [messageIndex: number]: fbapi.InputID } =
                                 this.lastState && this.lastState.messageIDs ? this.lastState.messageIDs : {};
                             if (snippets.length > 0) {
                                 let index = 1;
                                 let skipped = 0;
-                                snippets.forEach(snippet => {
+                                snippets.forEach((snippet) => {
                                     if (!snippet.body ||
                                         this.pattern.test(snippet.body) ||
                                         snippet.body.indexOf("'/search more' for more results") > -1) {
@@ -108,8 +108,8 @@ export class SearchModule extends MessageModule {
                             this.lastState = {
                                 contextMessageID: undefined,
                                 downLimit: undefined,
-                                messageIDs: messageIDs,
-                                query: query,
+                                messageIDs,
+                                query,
                                 searchOffset: offset,
                                 threadID: ctx.message.threadID,
                                 upLimit: undefined,
@@ -117,25 +117,25 @@ export class SearchModule extends MessageModule {
                         }
                 };
 
-                let matches = this.pattern.exec(ctx.message.body);
-                let msg = matches[1];
+                const matches = this.pattern.exec(ctx.message.body);
+                const msg = matches[1];
 
                 let specialMessage = false;
                 if (this.lastState && this.lastState.threadID === ctx.message.threadID) {
                     specialMessage = true;
                     if (msg === "more") {
                         // search more
-                        let newOffset = this.lastState.searchOffset + 5;
+                        const newOffset = this.lastState.searchOffset + 5;
                         ctx.api.searchForMessages(this.lastState.query, ctx.message.threadID, ctx.message.isGroup,
                             newOffset, (e, s) => handleSnippets(e, s, newOffset, this.lastState.query));
                     } else if (!isNaN(+msg)) {
                         // context
-                        let messageID = this.lastState.messageIDs[+msg];
+                        const messageID = this.lastState.messageIDs[+msg];
                         ctx.api.searchContext(messageID, ctx.message.threadID, ctx.message.isGroup, 6, undefined,
                             (e, m) => handleMessages(e, m, messageID, 6, undefined));
                     } else if (msg === "up" && this.lastState.contextMessageID) {
                         // up
-                        let newLimit = this.lastState.upLimit + 10;
+                        const newLimit = this.lastState.upLimit + 10;
                         ctx.api.searchContext(this.lastState.contextMessageID,
                             ctx.message.threadID,
                             ctx.message.isGroup,
@@ -143,7 +143,7 @@ export class SearchModule extends MessageModule {
                             (e, m) => handleMessages(e, m, this.lastState.contextMessageID, newLimit, "up"));
                     } else if (msg === "down" && this.lastState.contextMessageID) {
                         // down
-                        let newLimit = this.lastState.downLimit + 10;
+                        const newLimit = this.lastState.downLimit + 10;
                         ctx.api.searchContext(this.lastState.contextMessageID,
                             ctx.message.threadID,
                             ctx.message.isGroup,

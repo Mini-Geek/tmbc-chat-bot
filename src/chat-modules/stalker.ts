@@ -13,7 +13,7 @@ export class StalkerModule extends ReadReceiptModule {
 
     public processMessage(ctx: IContext<fbapi.ReadReceiptEvent>): void {
         if (StorageModule.storageInitialized && ctx.message.threadID in groups) {
-            let groupInfo = groups[ctx.message.threadID];
+            const groupInfo = groups[ctx.message.threadID];
             if (groupInfo.stalkTarget === ctx.message.reader && !this.isTooRecent(ctx.message)) {
                 Utils.sendMessage(ctx, groupInfo.stalkMessage);
             }
@@ -21,10 +21,10 @@ export class StalkerModule extends ReadReceiptModule {
     }
 
     private isTooRecent(message: fbapi.ReadReceiptEvent): boolean {
-        let fileName = `stalker-${message.threadID}-${message.reader}.json`;
+        const fileName = `stalker-${message.threadID}-${message.reader}.json`;
         let prev: number = storage.getItemSync(fileName);
-        let now: number = Number(message.time);
-        let tooRecent = prev && (now - prev < 3 * 3600 * 1000); // 3 hours
+        const now: number = Number(message.time);
+        const tooRecent = prev && (now - prev < 3 * 3600 * 1000); // 3 hours
         if (!tooRecent) {
             if (!prev) {
                 prev = -1;

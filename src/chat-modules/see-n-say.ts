@@ -14,21 +14,17 @@ export class SayModule extends MessageModule {
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body) {
             if (this.pattern.test(ctx.message.body)) {
-                let matches = this.pattern.exec(ctx.message.body);
-                let operation = matches[1];
+                const matches = this.pattern.exec(ctx.message.body);
+                const operation = matches[1];
                 let thread = matches[2];
-                let msg = matches[3];
+                const msg = matches[3];
 
                 if (isNaN(+thread)) {
                     // try to look up value
-                    let converted = this.getByStrId(thread);
-                    if (converted) {
-                        // found, use target one
-                        thread = converted;
-                    } else {
-                        // not found, assume it's going to current thread
-                        thread = ctx.message.threadID;
-                    }
+                    const converted = this.getByStrId(thread);
+                    // if found, use target one
+                    // if not found, assume it's going to current thread
+                    thread = converted ? converted : ctx.message.threadID;
                 } else {
                     // it's a number, assume that's the thread id
                     thread = thread;
@@ -55,9 +51,9 @@ export class SayModule extends MessageModule {
     }
 
     private getByStrId(strId: string): string {
-        for (let key in groups) {
+        for (const key in groups) {
             if (groups.hasOwnProperty(key)) {
-                let element = groups[key];
+                const element = groups[key];
                 if (element.threadStrId === strId) {
                     return key;
                 }
@@ -67,10 +63,10 @@ export class SayModule extends MessageModule {
     }
 
     private getStrIds(): string {
-        let ids: string[] = [];
-        for (let key in groups) {
+        const ids: string[] = [];
+        for (const key in groups) {
             if (groups.hasOwnProperty(key)) {
-                let element = groups[key];
+                const element = groups[key];
                 ids.push(element.threadStrId);
             }
         }

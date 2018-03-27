@@ -1,3 +1,4 @@
+// tslint:disable:max-classes-per-file
 import fbapi = require("facebook-chat-api");
 
 export interface IChatModule<T> {
@@ -15,7 +16,7 @@ export interface IContext<T> {
     shutdown: (reason: string) => void;
     setSleep: (sleep: boolean) => void;
     sleeping: boolean;
-    chatModules: IChatModule<any>[];
+    chatModules: Array<IChatModule<any>>;
 }
 export type AnyEvent = fbapi.MessageEvent | fbapi.EventEvent | fbapi.ReadReceiptEvent | fbapi.TypEvent;
 export abstract class EventModule implements IChatModule<fbapi.EventEvent> {

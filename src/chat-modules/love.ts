@@ -25,8 +25,8 @@ export class LoveModule extends MessageModule {
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body && this.ilyPattern.test(ctx.message.body)) {
-            let userHash = this.hash(ctx.message.senderID);
-            let name = this.petNames[userHash % this.petNames.length];
+            const userHash = this.hash(ctx.message.senderID);
+            const name = this.petNames[userHash % this.petNames.length];
             Utils.sendMessage(ctx, `I love you too, ${name}`);
         }
     }
@@ -49,5 +49,5 @@ export class LoveModule extends MessageModule {
             hash = -hash;
         }
         return hash;
-      };
+      }
 }

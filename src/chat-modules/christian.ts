@@ -9,7 +9,7 @@ export class ChristianModule extends MessageModule {
 
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body) {
-            let body = ctx.message.body.toLowerCase();
+            const body = ctx.message.body.toLowerCase();
             if (body.indexOf("/christian") > -1) {
                 Utils.sendMessage(ctx, "IT'S CHR" + this.repeat("I", 11) + "ISTII" + this.repeat("A", 29) + "N");
             } else if (body.indexOf("/notchristian") > -1) {
