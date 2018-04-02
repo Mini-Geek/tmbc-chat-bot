@@ -56,28 +56,32 @@ export class VideosModule extends MessageModule {
                     }
                     let channelDataDirty = false;
                     const bodyJson = JSON.parse(body);
-                    bodyJson.items.forEach((item: IYouTubeSearchItem) => {
-                        if (item.id && item.id.videoId) {
-                            if (data[threadID].indexOf(item.id.videoId) === -1) {
-                                if (this.ageInMillis(item.snippet.publishedAt) > 86400 * 1000) {
-                                    winston.warn("Found old video in video check", item);
-                                } else {
-                                    let introWord: string;
-                                    if (item.snippet.liveBroadcastContent === "live") {
-                                        introWord = "Live";
-                                    } else if (item.snippet.liveBroadcastContent === "upcoming") {
-                                        introWord = "Upcoming";
+                    if (bodyJson && bodyJson.items) {
+                        bodyJson.items.forEach((item: IYouTubeSearchItem) => {
+                            if (item.id && item.id.videoId) {
+                                if (data[threadID].indexOf(item.id.videoId) === -1) {
+                                    if (this.ageInMillis(item.snippet.publishedAt) > 86400 * 1000) {
+                                        winston.warn("Found old video in video check", item);
                                     } else {
-                                        introWord = "New";
+                                        let introWord: string;
+                                        if (item.snippet.liveBroadcastContent === "live") {
+                                            introWord = "Live";
+                                        } else if (item.snippet.liveBroadcastContent === "upcoming") {
+                                            introWord = "Upcoming";
+                                        } else {
+                                            introWord = "New";
+                                        }
+                                        messages.push(`${introWord} ${item.snippet.channelTitle} video ` +
+                                            `"${item.snippet.title}": https://youtu.be/${item.id.videoId}`);
                                     }
-                                    messages.push(`${introWord} ${item.snippet.channelTitle} video ` +
-                                        `"${item.snippet.title}": https://youtu.be/${item.id.videoId}`);
+                                    data[threadID].push(item.id.videoId);
+                                    channelDataDirty = true;
                                 }
-                                data[threadID].push(item.id.videoId);
-                                channelDataDirty = true;
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        winston.warn("Didn't find items in video check", body, bodyJson);
+                    }
                     if (channelDataDirty) {
                         storage.setItemSync(this.fileName, data);
                     }
