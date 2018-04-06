@@ -12,7 +12,6 @@ import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
 import { LinksModule } from "./chat-modules/links";
 import { LoveModule } from "./chat-modules/love";
-// import { SearchModule } from "./chat-modules/search";
 import { SecretModule } from "./chat-modules/secret";
 import { SayModule } from "./chat-modules/see-n-say";
 import { ShrugModule } from "./chat-modules/shrug";
@@ -44,7 +43,6 @@ let chatModules: Array<IChatModule<AnyEvent>> = [
     sleepModule,
     new DieModule(),
     new SecretModule(),
-    // new SearchModule(),
     new SayModule(),
     new ShrugModule(),
     new StalkerModule(),
