@@ -17,6 +17,7 @@ export interface IContext<T> {
     setSleep: (sleep: boolean) => void;
     sleeping: boolean;
     chatModules: Array<IChatModule<any>>;
+    messageHandled: boolean;
 }
 export type AnyEvent = fbapi.MessageEvent | fbapi.EventEvent | fbapi.ReadReceiptEvent | fbapi.TypEvent;
 export abstract class EventModule implements IChatModule<fbapi.EventEvent> {

@@ -18,6 +18,7 @@ import { ShrugModule } from "./chat-modules/shrug";
 import { SleepModule } from "./chat-modules/sleep";
 import { StalkerModule } from "./chat-modules/stalker";
 import { StorageModule } from "./chat-modules/storage";
+import { UnhandledModule } from "./chat-modules/unhandled";
 import { VideosModule } from "./chat-modules/videos";
 
 winston.add(
@@ -49,6 +50,7 @@ let chatModules: Array<IChatModule<AnyEvent>> = [
     new AvocadoModule(),
     videosModule,
     new LoveModule(),
+    new UnhandledModule(), // keep this last, so that other modules can handle message first
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
     winston.error("Please fill in credentials.ts with the account's email and password.");
@@ -79,6 +81,7 @@ const runLogin = () => login(credentials, (loginErr, api) => {
             api,
             chatModules,
             message,
+            messageHandled: false,
             setSleep,
             shutdown,
             sleeping,

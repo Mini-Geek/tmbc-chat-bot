@@ -11,6 +11,7 @@ export class Utils {
         yourMessage: string,
         threadId: string = ctx.message.threadID): void {
         Utils.sendMessageDirect(ctx.api, yourMessage, threadId, ctx.message);
+        ctx.messageHandled = true;
     }
 
     /**

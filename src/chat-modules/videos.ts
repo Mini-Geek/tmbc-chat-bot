@@ -25,6 +25,7 @@ export class VideosModule extends MessageModule {
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (StorageModule.storageInitialized && ctx.message.body === "/videocheck") {
             this.runCheck(ctx.api, ctx.message.threadID, false, ctx.message);
+            ctx.messageHandled = true;
         }
     }
 
