@@ -24,10 +24,9 @@ import { VideosModule } from "./chat-modules/videos";
 winston.add(
     winston.transports.DailyRotateFile,
     {
-        datePattern: "yyyy-MM.",
-        filename: "logs/chat-bot.log",
+        datePattern: "YYYY-MM",
+        filename: "logs/%DATE%.chat-bot.log",
         level: "info",
-        prepend: true,
     });
 winston.warn("starting up!");
 
