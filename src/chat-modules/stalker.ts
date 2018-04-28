@@ -14,15 +14,21 @@ export class StalkerModule extends ReadReceiptModule {
     public processMessage(ctx: IContext<fbapi.ReadReceiptEvent>): void {
         if (StorageModule.storageInitialized && ctx.message.threadID in groups) {
             const groupInfo = groups[ctx.message.threadID];
-            if (groupInfo.stalkTarget === ctx.message.reader && !this.isTooRecent(ctx.message)) {
-                Utils.sendMessage(ctx, groupInfo.stalkMessage);
+            if (groupInfo.stalkTarget === ctx.message.reader) {
+                this.isTooRecent(ctx.message).then((tooRecent: boolean) => {
+                    if (!tooRecent) {
+                        Utils.sendMessage(ctx, groupInfo.stalkMessage);
+                    }
+                }).catch((error) => {
+                    winston.error("Error getting stalker data", error);
+                });
             }
         }
     }
 
-    private isTooRecent(message: fbapi.ReadReceiptEvent): boolean {
+    private async isTooRecent(message: fbapi.ReadReceiptEvent): Promise<boolean> {
         const fileName = `stalker-${message.threadID}-${message.reader}.json`;
-        let prev: number = storage.getItemSync(fileName);
+        let prev: number = await storage.getItem(fileName);
         const now: number = Number(message.time);
         const tooRecent = prev && (now - prev < 3 * 3600 * 1000); // 3 hours
         if (!tooRecent) {
@@ -31,7 +37,7 @@ export class StalkerModule extends ReadReceiptModule {
             }
             winston.info(`Preparing to send stalker message based on ${prev} and ${now}, diff ${now - prev} ms`);
         }
-        storage.setItemSync(fileName, now);
+        await storage.setItem(fileName, now);
         return tooRecent;
     }
 }

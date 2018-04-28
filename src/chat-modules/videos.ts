@@ -50,8 +50,8 @@ export class VideosModule extends MessageModule {
                 res.on("data", (data: string) => {
                     body += data;
                 });
-                res.on("end", () => {
-                    const data: IStoredData = storage.getItemSync(this.fileName) || {};
+                res.on("end", async () => {
+                    const data: IStoredData = await storage.getItem(this.fileName) || {};
                     if (!data.hasOwnProperty(threadID)) {
                         data[threadID] = [];
                     }
@@ -84,7 +84,7 @@ export class VideosModule extends MessageModule {
                         winston.warn("Didn't find items in video check", body, bodyJson);
                     }
                     if (channelDataDirty) {
-                        storage.setItemSync(this.fileName, data);
+                        await storage.setItem(this.fileName, data);
                     }
                     channelsDone++;
                     if (channelsDone === this.channelIds.length) {

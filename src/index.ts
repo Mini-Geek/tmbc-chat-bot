@@ -30,7 +30,7 @@ winston.add(
     });
 winston.warn("starting up!");
 
-StorageModule.init();
+StorageModule.init().catch(winston.error);
 const videosModule = new VideosModule();
 const sleepModule = new SleepModule();
 let sleeping = false;

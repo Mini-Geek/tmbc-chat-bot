@@ -3,11 +3,10 @@ import storage = require("node-persist");
 export class StorageModule {
     public static storageInitialized = false;
 
-    public static init(): void {
+    public static async init(): Promise<void> {
         if (!StorageModule.storageInitialized) {
-            storage.init({ dir: "./data" }, () => {
-                StorageModule.storageInitialized = true;
-            });
+            await storage.init({ dir: "./data" });
+            StorageModule.storageInitialized = true;
         }
     }
 }

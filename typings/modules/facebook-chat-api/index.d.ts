@@ -390,7 +390,6 @@ namespace FacebookChatApi {
     sticker?: string;
     attachment?: Readable | Readable[];
     url?: string;
-    timestamp_datetime: string;
   }
 
   export interface MessageInfo {
@@ -401,20 +400,6 @@ namespace FacebookChatApi {
 
   export interface SetTitleResult {
     threadID: OutputID;
-  }
-
-  export interface Snippet {
-    author: string,
-    body: string,
-    matched_keywords: {
-      [key: string]: string
-    },
-    message_id: string,
-    timestamp: number,
-    timestamp_absolute: string,
-    timestamp_datetime: string,
-    timestamp_relative: string
-
   }
 
   export interface Api {
@@ -667,10 +652,6 @@ namespace FacebookChatApi {
      */
     searchForThread(name: InputID | InputID[], callback: (err: ErrorObject, obj: Thread) => any): void;
     // TODO: check if the doc is right, it looks like obj could be an array of Threads
-
-    searchForMessages(query: string, threadID: InputID, isGroup: boolean, snippetOffset: number, callback: (err: ErrorObject, snippets: Snippet[]) => any): void;
-
-    searchContext(messageID: InputID, threadID: InputID, isGroup: boolean, limit: number, direction: string, callback: (err: ErrorObject, snippets: Message[]) => any): void;
 
     /**
      * api.sendMessage(message, threadID, [callback])

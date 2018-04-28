@@ -13,7 +13,7 @@ export class LinksModule extends MessageModule {
             Utils.sendMessage(ctx,
                 "Chat Guide: " +
                 "https://docs.google.com/document/d/1wkVjnSpfyDuD5fvnUjhUVVV8Ow-0ZwhLhQeaHAs72oI/edit" + "\n\n" +
-                "Other links: " +
+                "Other links:\n" +
                 "Admin Guide: " + AdminModule.AdminUrl + "\n" +
                 "https://www.blimeycow.com/cowmoonity" + "\n" +
                 "https://github.com/Mini-Geek/tmbc-chat-bot" + "\n" +

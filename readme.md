@@ -6,6 +6,6 @@ Note that it should work in any group chat, though there are some behaviors spec
 
 Setup:
 
-- Run `npm install`, `npm install -g typescript typings`, and make sure your PATH variable is configured so that a TypeScript 1.8+ compiler (`tsc`) is in it.
+- Run `npm install`, `npm install -g typescript typings`, and make sure your PATH variable is configured so that a TypeScript 2.8+ compiler (`tsc`) is in it.
 - Copy `credentials.template.ts` to `credentials.ts` and fill in the email and password of the Facebook account you want your bot to use.
 - Hit F5 in Visual Studio Code, or run `npm start`, and see if it runs.
