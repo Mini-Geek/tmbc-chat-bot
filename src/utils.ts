@@ -24,7 +24,6 @@ export class Utils {
         messageReason: any): void {
         winston.info(`Sending ${yourMessage} to ${threadId} in response to this:`, messageReason);
         api.sendMessage(yourMessage, threadId);
-        api.markAsRead(threadId);
     }
 
     public static isMessage(event: AnyEvent): event is fbapi.MessageEvent {
