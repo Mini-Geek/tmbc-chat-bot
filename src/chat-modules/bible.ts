@@ -8,7 +8,7 @@ import { IContext, MessageModule } from "./chat-module";
 export class BibleModule extends MessageModule {
     private defaultTranslationId = "06125adad2d5898a-01";
     private defaultTranslationName = "ASV";
-    private bibleReferencePattern: RegExp = new RegExp("^([A-Z0-9\\ ]+)\\s*(\\d+)(:\\d+)?$", "i");
+    private bibleReferencePattern: RegExp = new RegExp("^([A-Z0-9\\ ]+)\\s+(\\d+)(:\\d+)?$", "i");
     private chapterVerseReferencePattern: RegExp = new RegExp("^(\\d+:)?(\\d+)$", "i");
     public getHelpLine(): string {
         return "/bible [verse reference, e.g. John 3:16] - print the verse(s)\n" +
@@ -142,6 +142,9 @@ export class BibleModule extends MessageModule {
                         bodyJson.data.verses.forEach((verse) => {
                             msg += `${verse.text} (${verse.reference})\n`;
                         });
+                    } else if (bodyJson.data.passages) {
+                        this.getVerses(ctx, bodyJson.data.passages[0].id);
+                        return;
                     } else {
                         msg = "";
                     }
@@ -513,9 +516,17 @@ interface IPassageData {
     copyright: string;
 }
 interface ISearchResponse {
-    data: { query: string, limit: number, offset: number, total: number, verses: IBibleVerse[] };
+    data: ISearchData;
     meta: any;
     statusCode: number;
+}
+interface ISearchData {
+    query: string;
+    limit: number;
+    offset: number;
+    total: number;
+    verses: IBibleVerse[];
+    passages: IPassageData[];
 }
 interface IBibleVerse {
     id: string;
