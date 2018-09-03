@@ -5,6 +5,7 @@ import { credentials } from "./credentials";
 
 import { AdminModule } from "./chat-modules/admin";
 import { AvocadoModule } from "./chat-modules/avocado";
+import { BibleModule } from "./chat-modules/bible";
 import { AnyEvent, IChatModule, IContext } from "./chat-modules/chat-module";
 import { ChristianModule } from "./chat-modules/christian";
 import { DieModule } from "./chat-modules/die";
@@ -43,6 +44,7 @@ let chatModules: Array<IChatModule<AnyEvent>> = [
     sleepModule,
     new DieModule(),
     new SecretModule(),
+    new BibleModule(),
     new SayModule(),
     new ShrugModule(),
     new StalkerModule(),
