@@ -18,21 +18,9 @@ export class BibleModule extends MessageModule {
     public processMessage(ctx: IContext<fbapi.MessageEvent>): void {
         if (ctx.message.body && ctx.message.body.startsWith("/bible ")) {
             ctx.messageHandled = true;
-            // if (ctx.message.body === "/bible versions") {
-            //     this.listVersions(ctx);
-            // } else if (ctx.message.body === "/bible books") {
-            //     this.listBooks(ctx);
             if (ctx.message.body.startsWith("/bible search ")) {
                 const searchTerms = ctx.message.body.substr("/bible search ".length);
                 this.search(ctx, searchTerms);
-            // } else if (ctx.message.body.startsWith("/bible parsetest ")) {
-            //     const verseRef = this.parseVerses(ctx.message.body.substr("/bible parsetest ".length));
-            //     if (verseRef instanceof Error) {
-            //         winston.error("Error parsing verses", verseRef);
-            //         Utils.sendMessage(ctx, "Err, " + verseRef.message);
-            //     } else {
-            //         Utils.sendMessage(ctx, verseRef);
-            //     }
             } else {
                 const verseRef = this.parseVerses(ctx.message.body.substr("/bible ".length));
                 if (verseRef instanceof Error) {
@@ -44,82 +32,6 @@ export class BibleModule extends MessageModule {
             }
         }
     }
-
-    // private listVersions(ctx: IContext<fbapi.MessageEvent>): void {
-    //     const req = https.get({
-    //         headers: { "api-key": credentials.bibleApiKey },
-    //         host: "api.scripture.api.bible",
-    //         path: "/v1/bibles",
-    //     }, (res) => {
-    //         let body = "";
-    //         res.on("data", (data: string) => {
-    //             body += data;
-    //         });
-    //         res.on("end", async () => {
-    //             winston.debug("Response received from Bible API", body);
-    //             const bodyJson: IVersionsResponse = JSON.parse(body);
-    //             if (bodyJson && bodyJson.data) {
-    //                 let msg = "";
-    //                 bodyJson.data.forEach((translation) => {
-    //                     if (translation.language.id === "eng") {
-    //                         msg += `${translation.name} (${translation.abbreviation}, ${translation.description})\n`;
-    //                     }
-    //                 });
-    //                 Utils.sendMessage(ctx,
-    //                     `There are ${bodyJson.data.length} translations available, `
-    //                     + "the English ones are:\n"
-    //                     + msg);
-    //             } else if (bodyJson && bodyJson.statusCode >= 400 && bodyJson.statusCode < 600) {
-    //                 // error
-    //                 winston.error("Error returned from Bible API request.", bodyJson);
-    //                 Utils.sendMessage(ctx, "Sorry, bible API returned error");
-    //             }
-    //         });
-    //     });
-    //     req.on("error", (e: any) => {
-    //         winston.error("Error making Bible API request.", e);
-    //         Utils.sendMessage(ctx, "Sorry, I can't talk to the bible API");
-    //     });
-    //     req.end();
-    // }
-
-    // private listBooks(ctx: IContext<fbapi.MessageEvent>): void {
-    //     const req = https.get({
-    //         headers: { "api-key": credentials.bibleApiKey },
-    //         host: "api.scripture.api.bible",
-    //         path: `/v1/bibles/${this.defaultTranslationId}/books`,
-    //     }, (res) => {
-    //         let body = "";
-    //         res.on("data", (data: string) => {
-    //             body += data;
-    //         });
-    //         res.on("end", async () => {
-    //             winston.debug("Response received from Bible API", body);
-    //             const bodyJson: any = JSON.parse(body);
-    //             if (bodyJson && bodyJson.data) {
-    //                 let msg = "";
-    //                 bodyJson.data.forEach((translation: IBibleVersion) => {
-    //                     if (translation.language.id === "eng") {
-    //                         msg += `${translation.name} (${translation.abbreviation}, ${translation.description})\n`;
-    //                     }
-    //                 });
-    //                 Utils.sendMessage(ctx,
-    //                     `There are ${bodyJson.data.length} translations available, `
-    //                     + "the English ones are:\n"
-    //                     + msg);
-    //             } else if (bodyJson && bodyJson.statusCode >= 400 && bodyJson.statusCode < 600) {
-    //                 // error
-    //                 winston.error("Error returned from Bible API request.", bodyJson);
-    //                 Utils.sendMessage(ctx, "Sorry, bible API returned error");
-    //             }
-    //         });
-    //     });
-    //     req.on("error", (e: any) => {
-    //         winston.error("Error making Bible API request.", e);
-    //         Utils.sendMessage(ctx, "Sorry, I can't talk to the bible API");
-    //     });
-    //     req.end();
-    // }
 
     private getVerses(ctx: IContext<fbapi.MessageEvent>, verseRef: string): void {
         const req = https.get({
@@ -160,6 +72,9 @@ export class BibleModule extends MessageModule {
         let chapter: string;
         if (sections.length > 2) {
             return new Error("I couldn't understand you: more than one dash");
+        }
+        for (let i = 0; i < sections.length; i++) {
+            sections[i] = sections[i].trim();
         }
         if (this.bibleReferencePattern.test(sections[0])) {
             const matches = this.bibleReferencePattern.exec(sections[0]);
@@ -611,37 +526,6 @@ interface IBibleVerse {
     reference: string;
     text: string;
 }
-// interface IVersionsResponse {
-//     data: IBibleVersion[];
-//     statusCode: number;
-// }
-// interface IBibleVersion {
-//     id: string;
-//     dblId: string;
-//     relatedDbl: string;
-//     name: string;
-//     nameLocal: string;
-//     abbreviation: string;
-//     abbreviationLocal: string;
-//     description: string;
-//     descriptionLocal: string;
-//     language: ILanguage;
-//     countries: ICountry[];
-//     type: string;
-//     audioBibles: any[];
-// }
-// interface ILanguage {
-//     id: string;
-//     name: string;
-//     nameLocal: string;
-//     script: string;
-//     scriptDirection: "LTR" | "RTL";
-// }
-// interface ICountry {
-//     id: string;
-//     name: string;
-//     nameLocal: string;
-// }
 interface IBookData {
     abbreviation: string;
     id: string;
