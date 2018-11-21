@@ -7,9 +7,10 @@ import { StorageModule } from "./storage";
 
 export class LastSeenModule extends MessageModule {
     private fileName: string = "last-seen-data.json";
+    private pattern: RegExp = new RegExp("^/lastseen (.+)$");
 
     public getHelpLine(): string {
-        return "/lastseen: show when each user last sent a message\n" +
+        return "/lastseen [thread-id (optional)]: show when each user last sent a message\n" +
                 "/lastseen update names: update the list of names";
     }
 
@@ -17,14 +18,19 @@ export class LastSeenModule extends MessageModule {
 
     public async processMessage(ctx: IContext<fbapi.MessageEvent>): Promise<void> {
         if (StorageModule.storageInitialized) {
-            if (ctx.message.body === "/lastseen") {
-                // trying to call updateNames from here doesn't work right, because of how asyncs and callbacks work
-                // read and display
-                await this.showLastSeenData(ctx);
-            }
             if (ctx.message.body === "/lastseen update names") {
                 // gather data and record; provide message
                 this.updateNames(ctx);
+            } else if (ctx.message.body === "/lastseen") {
+                // trying to call updateNames from here doesn't work right, because of how asyncs and callbacks work
+                // read and display
+                await this.showLastSeenData(ctx, ctx.message.threadID);
+            } else if (ctx.message.body && this.pattern.test(ctx.message.body)) {
+                const matches = this.pattern.exec(ctx.message.body);
+                const thread = Utils.getThreadIdFromInput(matches[1], ctx.message.threadID);
+                // trying to call updateNames from here doesn't work right, because of how asyncs and callbacks work
+                // read and display
+                await this.showLastSeenData(ctx, thread);
             }
 
             // record
@@ -59,7 +65,6 @@ export class LastSeenModule extends MessageModule {
             const nicknames = retThread.nicknames as any as {
                 [userId: string]: string;
             };
-            winston.info("nicknames obj" + JSON.stringify(nicknames));
             const newThreadData: IThreadData = {};
             ctx.api.getUserInfo(retThread.participantIDs, async (errUsers, retUsers) => {
                 if (errUsers) {
@@ -87,10 +92,10 @@ export class LastSeenModule extends MessageModule {
         });
     }
 
-    private async showLastSeenData(ctx: IContext<fbapi.MessageEvent>) {
+    private async showLastSeenData(ctx: IContext<fbapi.MessageEvent>, threadId: string) {
         ctx.messageHandled = true;
         const currFileData: IAllData = await storage.getItem(this.fileName) || {};
-        const currThreadData = currFileData[ctx.message.threadID];
+        const currThreadData = currFileData[threadId];
         if (currThreadData) {
             const users: IUserData[] = [];
             for (const userId in currThreadData) {
@@ -101,16 +106,23 @@ export class LastSeenModule extends MessageModule {
             // most recent first
             users.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
             let message = "";
+            let startedNeverSeenGroup = false;
             users.forEach((user) => {
                 const name = user.name
                     ? (user.nickname ? `${user.nickname} (${user.name})` : user.name)
                     : "[Unknown name]";
-                const messageDate = user.lastMessageTime < 0
-                    ? "Never seen"
-                    : "Last message on " + new Date(user.lastMessageTime).toDateString();
-                message += `${name}: ${messageDate}\n`;
+                if (user.lastMessageTime < 0 && !startedNeverSeenGroup) {
+                    startedNeverSeenGroup = true;
+                    message += "Never seen: ";
+                }
+                if (startedNeverSeenGroup) {
+                    message += `${name}, `;
+                } else {
+                    const messageDate = "Last message on " + new Date(user.lastMessageTime).toDateString();
+                    message += `${name}: ${messageDate}\n`;
+                }
             });
-            message += `(that's ${users.length} users)`;
+            message += `(that's ${users.length} users total)`;
             Utils.sendMessage(ctx, message);
         } else {
             Utils.sendMessage(ctx, "No data recorded for this thread yet.");

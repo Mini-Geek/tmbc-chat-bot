@@ -19,16 +19,7 @@ export class SayModule extends MessageModule {
                 let thread = matches[2];
                 const msg = matches[3];
 
-                if (isNaN(+thread)) {
-                    // try to look up value
-                    const converted = this.getByStrId(thread);
-                    // if found, use target one
-                    // if not found, assume it's going to current thread
-                    thread = converted ? converted : ctx.message.threadID;
-                } else {
-                    // it's a number, assume that's the thread id
-                    thread = thread;
-                }
+                thread = Utils.getThreadIdFromInput(thread, ctx.message.threadID);
 
                 switch (operation) {
                     case "say":
@@ -48,18 +39,6 @@ export class SayModule extends MessageModule {
                 }
             }
         }
-    }
-
-    private getByStrId(strId: string): string {
-        for (const key in groups) {
-            if (groups.hasOwnProperty(key)) {
-                const element = groups[key];
-                if (element.threadStrId === strId) {
-                    return key;
-                }
-            }
-        }
-        return undefined;
     }
 
     private getStrIds(): string {

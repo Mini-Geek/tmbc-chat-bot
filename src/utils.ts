@@ -1,6 +1,7 @@
 import fbapi = require("facebook-chat-api");
 import winston = require("winston");
 import { AnyEvent, IContext } from "./chat-modules/chat-module";
+import { groups } from "./chat-modules/const";
 
 export class Utils {
     /**
@@ -34,5 +35,31 @@ export class Utils {
     }
     public static isTyp(event: AnyEvent): event is fbapi.TypEvent {
         return event.type === "typ";
+    }
+
+    public static getThreadIdFromInput(thread: string, currentThreadId: string): string {
+        if (isNaN(+thread)) {
+            // try to look up value
+            const converted = this.getByStrId(thread);
+            // if found, use target one
+            // if not found, assume it's going to current thread
+            thread = converted ? converted : currentThreadId;
+        } else {
+            // it's a number, assume that's the thread id
+            thread = thread;
+        }
+        return thread;
+    }
+
+    private static getByStrId(strId: string): string {
+        for (const key in groups) {
+            if (groups.hasOwnProperty(key)) {
+                const element = groups[key];
+                if (element.threadStrId === strId) {
+                    return key;
+                }
+            }
+        }
+        return undefined;
     }
 }
