@@ -11,6 +11,7 @@ import { ChristianModule } from "./chat-modules/christian";
 import { DieModule } from "./chat-modules/die";
 import { HelloModule } from "./chat-modules/hello";
 import { HelpModule } from "./chat-modules/help";
+import { LastSeenModule } from "./chat-modules/last-seen";
 import { LinksModule } from "./chat-modules/links";
 import { LoveModule } from "./chat-modules/love";
 import { SecretModule } from "./chat-modules/secret";
@@ -47,6 +48,7 @@ let chatModules: Array<IChatModule<AnyEvent>> = [
     new BibleModule(),
     new SayModule(),
     new ShrugModule(),
+    new LastSeenModule(),
     new StalkerModule(),
     new AvocadoModule(),
     videosModule,
