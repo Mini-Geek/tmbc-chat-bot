@@ -20,6 +20,7 @@ import { ShrugModule } from "./chat-modules/shrug";
 import { SleepModule } from "./chat-modules/sleep";
 import { StalkerModule } from "./chat-modules/stalker";
 import { StorageModule } from "./chat-modules/storage";
+import { TyrantModule } from "./chat-modules/tyrant";
 import { UnhandledModule } from "./chat-modules/unhandled";
 import { VideosModule } from "./chat-modules/videos";
 
@@ -53,6 +54,7 @@ let chatModules: Array<IChatModule<AnyEvent>> = [
     new AvocadoModule(),
     videosModule,
     new LoveModule(),
+    new TyrantModule(),
     new UnhandledModule(), // keep this last, so that other modules can handle message first
 ];
 if (!credentials || !credentials.email || credentials.email === "<FILL IN>") {
