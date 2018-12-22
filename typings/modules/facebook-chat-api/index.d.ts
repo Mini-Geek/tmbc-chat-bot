@@ -539,7 +539,7 @@ namespace FacebookChatApi {
      * `timestamp`: Used to described the end time. If set, will query messages up to and including `timestamp`.
      * `callback(error, history)`: If error is null, history will contain an array of message objects.
      */
-    getThreadHistory(threadID: InputID, start: number, end: number, timestamp: any, callback: (err: ErrorObject, history: Message[]) => any): any;
+    getThreadHistory(threadID: InputID, amount: number, timestamp: any, callback: (err: ErrorObject, history: Message[]) => any): any;
 
     /**
      * api.getThreadInfo(threadID, [callback])

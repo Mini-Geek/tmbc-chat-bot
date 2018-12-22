@@ -12,6 +12,7 @@ npm-debug.log*
 
 # Runtime data
 data
+history
 pids
 *.pid
 *.seed

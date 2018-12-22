@@ -4,6 +4,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch history-analysis",
+            "program": "${workspaceFolder}/build/history-analysis.js",
+            "args": ["download", "tmbc"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
             "runtimeArgs": [

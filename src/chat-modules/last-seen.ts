@@ -7,30 +7,21 @@ import { StorageModule } from "./storage";
 
 export class LastSeenModule extends MessageModule {
     private fileName: string = "last-seen-data.json";
-    private pattern: RegExp = new RegExp("^/lastseen (.+)$");
+    private patternUpdate: RegExp = new RegExp("^/lastseen update names (.+)?$");
 
     public getHelpLine(): string {
-        return "/lastseen [thread-id (optional)]: show when each user last sent a message\n" +
-                "/lastseen update names: update the list of names";
+        return "/lastseen update names [thread-id (optional)]: update the list of names for the last-seen data";
     }
 
     public handleSelf(): boolean { return true; }
 
     public async processMessage(ctx: IContext<fbapi.MessageEvent>): Promise<void> {
-        if (StorageModule.storageInitialized) {
-            if (ctx.message.body === "/lastseen update names") {
+        if (StorageModule.storageInitialized && ctx.message.body) {
+            if (this.patternUpdate.test(ctx.message.body)) {
                 // gather data and record; provide message
-                this.updateNames(ctx);
-            } else if (ctx.message.body === "/lastseen") {
-                // trying to call updateNames from here doesn't work right, because of how asyncs and callbacks work
-                // read and display
-                await this.showLastSeenData(ctx, ctx.message.threadID);
-            } else if (ctx.message.body && this.pattern.test(ctx.message.body)) {
-                const matches = this.pattern.exec(ctx.message.body);
+                const matches = this.patternUpdate.exec(ctx.message.body);
                 const thread = Utils.getThreadIdFromInput(matches[1], ctx.message.threadID);
-                // trying to call updateNames from here doesn't work right, because of how asyncs and callbacks work
-                // read and display
-                await this.showLastSeenData(ctx, thread);
+                this.updateNames(ctx, thread);
             }
 
             // record
@@ -52,15 +43,15 @@ export class LastSeenModule extends MessageModule {
         await storage.setItem(this.fileName, currFileData);
     }
 
-    private updateNames(ctx: IContext<fbapi.MessageEvent>) {
+    private updateNames(ctx: IContext<fbapi.MessageEvent>, threadId: string) {
         ctx.messageHandled = true;
-        ctx.api.getThreadInfo(ctx.message.threadID, async (errThread, retThread) => {
+        ctx.api.getThreadInfo(threadId, async (errThread, retThread) => {
             if (errThread) {
                 Utils.sendMessage(ctx, "Something went wrong.");
                 return winston.error("Error getting thread info", errThread);
             }
             const currFileData: IAllData = await storage.getItem(this.fileName) || {};
-            let currThreadData = currFileData[ctx.message.threadID];
+            let currThreadData = currFileData[threadId];
             currThreadData = currThreadData || {};
             const nicknames = retThread.nicknames as any as {
                 [userId: string]: string;
@@ -85,57 +76,20 @@ export class LastSeenModule extends MessageModule {
                         count++;
                     }
                 }
-                currFileData[ctx.message.threadID] = newThreadData;
+                currFileData[threadId] = newThreadData;
                 await storage.setItem(this.fileName, currFileData);
                 Utils.sendMessage(ctx, `Recorded names for ${count} users.`);
             });
         });
     }
-
-    private async showLastSeenData(ctx: IContext<fbapi.MessageEvent>, threadId: string) {
-        ctx.messageHandled = true;
-        const currFileData: IAllData = await storage.getItem(this.fileName) || {};
-        const currThreadData = currFileData[threadId];
-        if (currThreadData) {
-            const users: IUserData[] = [];
-            for (const userId in currThreadData) {
-                if (currThreadData.hasOwnProperty(userId)) {
-                    users.push(currThreadData[userId]);
-                }
-            }
-            // most recent first
-            users.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-            let message = "";
-            let startedNeverSeenGroup = false;
-            users.forEach((user) => {
-                const name = user.name
-                    ? (user.nickname ? `${user.nickname} (${user.name})` : user.name)
-                    : "[Unknown name]";
-                if (user.lastMessageTime < 0 && !startedNeverSeenGroup) {
-                    startedNeverSeenGroup = true;
-                    message += "Never seen: ";
-                }
-                if (startedNeverSeenGroup) {
-                    message += `${name}, `;
-                } else {
-                    const messageDate = "Last message on " + new Date(user.lastMessageTime).toDateString();
-                    message += `${name}: ${messageDate}\n`;
-                }
-            });
-            message += `(that's ${users.length} users total)`;
-            Utils.sendMessage(ctx, message);
-        } else {
-            Utils.sendMessage(ctx, "No data recorded for this thread yet.");
-        }
-    }
 }
-interface IAllData {
+export interface IAllData {
     [threadId: string]: IThreadData;
 }
-interface IThreadData {
+export interface IThreadData {
     [userId: string]: IUserData;
 }
-interface IUserData {
+export interface IUserData {
     lastMessageTime: number;
     name: string;
     nickname: string;
